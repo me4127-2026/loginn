@@ -105,19 +105,59 @@ body{
 
 button{
   margin-top:18px;
-  width:100%;
   padding:14px;
   border:none;
   border-radius:30px;
   font-weight:700;
   font-size:16px;
-  background:#1565c0;
-  color:#fff;
+  cursor:pointer;
 }
 
 button:disabled{
   background:#999;
 }
+
+
+/* =========================
+   NAVIGATION BUTTONS
+========================= */
+
+.navigationButtons{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+
+.navigationButtons button{
+  flex:1;
+  margin-top:0;
+}
+
+#prevBtn{
+  background:#757575;
+  color:#fff;
+}
+
+#nextBtn{
+  background:#1565c0;
+  color:#fff;
+}
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+  .navigationButtons{
+    gap:8px;
+  }
+
+  .navigationButtons button{
+    padding:13px 8px;
+    font-size:15px;
+  }
+
+}  
 
 
 /* =========================
@@ -229,12 +269,25 @@ button:disabled{
     <div id="options"></div>
 
 
-    <button id="nextBtn"
-            onclick="next()">
+  <div class="navigationButtons">
 
-      Next
+  <button
+    id="prevBtn"
+    onclick="previous()"
+    type="button"
+  >
+    Previous
+  </button>
 
-    </button>
+  <button
+    id="nextBtn"
+    onclick="next()"
+    type="button"
+  >
+    Next
+  </button>
+
+</div>
 
   </div>
 
@@ -648,12 +701,19 @@ function render(){
     questions[index];
 
 
-  selected = null;
-
-
   /*
-     QUESTION
+     Restore previously selected answer
+     if the student has already answered
+     this question.
   */
+
+  selected =
+    answers[q.id] || null;
+
+
+  /* =========================================
+     QUESTION
+  ========================================= */
 
   questionText.innerHTML =
 
@@ -661,38 +721,69 @@ function render(){
      ${renderContent(q.q,"question")}`;
 
 
-  /*
+  /* =========================================
      OPTIONS
-  */
+  ========================================= */
 
   options.innerHTML =
 
     ["A","B","C","D"]
 
-      .map(o=>`
+      .map(o => {
 
-        <div
-          class="option"
-          onclick="pick('${o}',this)"
-        >
+        const isSelected =
+          selected === o
+            ? "selected"
+            : "";
 
-          <div class="optionContent">
+        return `
 
-            <strong>${o}.</strong>
+          <div
+            class="option ${isSelected}"
+            onclick="pick('${o}',this)"
+          >
 
-            ${renderContent(q[o],"option")}
+            <div class="optionContent">
+
+              <strong>${o}.</strong>
+
+              ${renderContent(q[o],"option")}
+
+            </div>
 
           </div>
 
-        </div>
+        `;
 
-      `)
+      })
 
       .join("");
 
 
+  /* =========================================
+     NAVIGATION
+  ========================================= */
+
+  const prevBtn =
+    document.getElementById("prevBtn");
+
+
+  const nextBtn =
+    document.getElementById("nextBtn");
+
+
   /*
-     BUTTON
+     First question:
+     Previous disabled
+  */
+
+  prevBtn.disabled =
+    index === 0;
+
+
+  /*
+     Last question:
+     Submit
   */
 
   nextBtn.innerText =
@@ -725,12 +816,54 @@ function pick(v,el){
 
 }
 
+function previous(){
 
+  /*
+     Already at first question
+  */
+
+  if(index === 0){
+
+    return;
+
+  }
+
+
+  /*
+     Save current answer if selected
+
+     This is normally already stored
+     when Next was clicked, but this
+     makes navigation safer.
+  */
+
+  if(selected){
+
+    answers[
+      questions[index].id
+    ] = selected;
+
+  }
+
+
+  /*
+     Move to previous question
+  */
+
+  index--;
+
+  render();
+
+}
 /* =========================================
    NEXT / SUBMIT
 ========================================= */
 
 function next(){
+
+  /*
+     Require an answer
+  */
 
   if(!selected){
 
@@ -741,10 +874,18 @@ function next(){
   }
 
 
+  /*
+     Save answer
+  */
+
   answers[
     questions[index].id
   ] = selected;
 
+
+  /*
+     Last question
+  */
 
   if(
     index === questions.length - 1
@@ -752,15 +893,18 @@ function next(){
 
     submit(false);
 
-  }
-
-  else{
-
-    index++;
-
-    render();
+    return;
 
   }
+
+
+  /*
+     Move forward
+  */
+
+  index++;
+
+  render();
 
 }
 
@@ -790,10 +934,13 @@ function submit(auto){
     .style.display = "flex";
 
 
-  document
-    .getElementById("nextBtn")
-    .disabled = true;
+ document
+  .getElementById("nextBtn")
+  .disabled = true;
 
+document
+  .getElementById("prevBtn")
+  .disabled = true;
 
   fetch(BACKEND,{
 
