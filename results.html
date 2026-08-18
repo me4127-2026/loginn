@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
+
 <title>Class Test Result</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
 
 <style>
-  .initial-loading{
+
+/* =========================
+   LOADING
+========================= */
+
+.initial-loading{
   text-align:center;
   font-weight:700;
   padding:20px;
   color:#1565c0;
 }
+
+
+/* =========================
+   BODY
+========================= */
+
 body{
-  font-family:"Segoe UI",Arial;
+  font-family:"Segoe UI",Arial,sans-serif;
   background:#f4f6f8;
   margin:0;
+  padding-bottom:80px;
 }
+
+
+/* =========================
+   HEADER
+========================= */
+
 .header{
   background:#203a43;
   color:#fff;
@@ -24,23 +47,17 @@ body{
   text-align:center;
   font-weight:700;
 }
+
+
+/* =========================
+   SCORE
+========================= */
+
 .score{
   text-align:center;
   margin:16px 0;
 }
-.card{
-  background:#fff;
-  margin:12px;
-  padding:14px;
-  border-radius:14px;
-  box-shadow:0 8px 18px rgba(0,0,0,.15);
-}
-  .option.correct{
-  background:#e8f5e9;
-  color:#1b5e20;
-  font-weight:800;
-  border:2px solid #2e7d32;
-}
+
 .scoreBox{
   display:inline-block;
   background:#e8f5e9;
@@ -49,28 +66,120 @@ body{
   border-radius:14px;
   font-weight:800;
   font-size:20px;
-  border:2px solid #2e7d32;   /* ADD THIS */
+  border:2px solid #2e7d32;
   box-shadow:0 4px 12px rgba(0,0,0,.12);
 }
-.option.wrong{
-  background:#fdecea;
-  color:#b71c1c;
-  border:2px solid #c62828;
-}.option::before{
+
+
+/* =========================
+   QUESTION CARD
+========================= */
+
+.card{
+  background:#fff;
+  margin:12px;
+  padding:16px;
+  border-radius:14px;
+  box-shadow:0 8px 18px rgba(0,0,0,.15);
+}
+
+.questionContent{
+  font-weight:700;
+  margin-bottom:14px;
+}
+
+
+/* =========================
+   IMAGES
+========================= */
+
+.contentImage{
+  display:block;
+  max-width:100%;
+  width:auto;
+  height:auto;
+  max-height:300px;
+  object-fit:contain;
+  margin:12px auto;
+  border-radius:10px;
+}
+
+
+/* Question images */
+
+.questionContent .contentImage{
+  max-height:300px;
+}
+
+
+/* Option images */
+
+.optionContent .contentImage{
+  max-height:180px;
+  margin:10px auto 4px;
+}
+
+
+/* =========================
+   OPTIONS
+========================= */
+
+.option{
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:2px solid transparent;
+}
+
+
+/* Circle indicator */
+
+.option::before{
   content:"○";
   font-weight:800;
   margin-right:8px;
 }
-.option.correct::before,
+
+
+/* Correct */
+
+.option.correct{
+  background:#e8f5e9;
+  color:#1b5e20;
+  font-weight:800;
+  border:2px solid #2e7d32;
+}
+
+.option.correct::before{
+  content:"●";
+}
+
+
+/* Wrong */
+
+.option.wrong{
+  background:#fdecea;
+  color:#b71c1c;
+  border:2px solid #c62828;
+}
+
 .option.wrong::before{
   content:"●";
 }
-.option{
-  padding:8px;
-  margin-top:6px;
-  border-radius:8px;
+
+
+/* Neutral */
+
+.neutral{
+  background:#f5f7fa;
 }
-  .closeBtn{
+
+
+/* =========================
+   CLOSE BUTTON
+========================= */
+
+.closeBtn{
   position:fixed;
   bottom:14px;
   left:50%;
@@ -84,75 +193,548 @@ body{
   font-weight:700;
   cursor:pointer;
   box-shadow:0 8px 18px rgba(0,0,0,.25);
+  z-index:1000;
 }
 
 .closeBtn:hover{
   background:#162a32;
 }
-.neutral{background:#f5f7fa;}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  .card{
+    margin:10px;
+    padding:14px;
+  }
+
+  .contentImage{
+    max-height:250px;
+  }
+
+  .questionContent .contentImage{
+    max-height:240px;
+  }
+
+  .optionContent .contentImage{
+    max-height:150px;
+  }
+
+  .scoreBox{
+    font-size:18px;
+  }
+
+}
+
 </style>
 </head>
 
-<body>
-<div class="header">Class Test Result</div>
-  <div id="initialLoader" class="initial-loading">
-  Loading answer sheet… Please wait
-</div>
-<div class="score" id="score"></div>
-<div id="content"></div>
-<script src="config.js"></script>
-<script>
-const BACKEND = BACKEND_URL;
-const token = sessionStorage.getItem("token");
-if(!token) location.replace("index.html");
 
-const testId = new URLSearchParams(location.search).get("test");
+<body>
+
+
+<div class="header">
+  Class Test Result
+</div>
+
+
+<div id="initialLoader"
+     class="initial-loading">
+
+  Loading answer sheet… Please wait
+
+</div>
+
+
+<div class="score"
+     id="score">
+</div>
+
+
+<div id="content"></div>
+
+
+<script src="config.js"></script>
+
+
+<script>
+
+const BACKEND = BACKEND_URL;
+
+const token =
+  sessionStorage.getItem("token");
+
+
+if(!token){
+
+  location.replace("index.html");
+
+}
+
+
+const testId =
+  new URLSearchParams(location.search)
+    .get("test");
+
+
+/* =========================================
+   GITHUB IMAGE BASE
+========================================= */
+
+const GITHUB_IMAGE_BASE =
+  "https://me4127-2026.github.io/loginn/";
+
+
+/* =========================================
+   GET IMAGE URL
+========================================= */
+
+function getImageURL(imagePath){
+
+  if(!imagePath){
+    return "";
+  }
+
+
+  imagePath =
+    String(imagePath).trim();
+
+
+  /*
+     Already a complete URL
+  */
+
+  if(
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://")
+  ){
+
+    return imagePath;
+
+  }
+
+
+  /*
+     Remove leading slash
+  */
+
+  imagePath =
+    imagePath.replace(/^\/+/, "");
+
+
+  return GITHUB_IMAGE_BASE + imagePath;
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================
+   RENDER TEXT / IMAGE / TEXT + IMAGE
+========================================= */
+
+function renderContent(content,type){
+
+  if(
+    content === null ||
+    content === undefined
+  ){
+
+    return "";
+
+  }
+
+
+  /*
+     TEXT ONLY
+  */
+
+  if(
+    typeof content === "string" ||
+    typeof content === "number"
+  ){
+
+    return escapeHTML(content);
+
+  }
+
+
+  /*
+     OBJECT:
+       {text:"...", image:"..."}
+       {image:"..."}
+  */
+
+  if(typeof content === "object"){
+
+    let html = "";
+
+
+    /*
+       TEXT
+    */
+
+    if(
+      content.text !== undefined &&
+      content.text !== null &&
+      String(content.text).trim() !== ""
+    ){
+
+      html += `
+
+        <div class="contentText">
+
+          ${escapeHTML(content.text)}
+
+        </div>
+
+      `;
+
+    }
+
+
+    /*
+       IMAGE
+    */
+
+    if(
+      content.image !== undefined &&
+      content.image !== null &&
+      String(content.image).trim() !== ""
+    ){
+
+      const imageURL =
+        getImageURL(content.image);
+
+
+      html += `
+
+        <img
+          class="contentImage"
+          src="${escapeHTML(imageURL)}"
+          alt="${type === "question"
+            ? "Question image"
+            : "Option image"}"
+          loading="eager"
+          onerror="this.style.display='none';"
+        >
+
+      `;
+
+    }
+
+
+    return html;
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================
+   NORMALIZE CORRECT ANSWER
+========================================= */
+
+function normalizeCorrect(value){
+
+  if(
+    value === null ||
+    value === undefined
+  ){
+
+    return "";
+
+  }
+
+
+  const v =
+    String(value)
+      .trim()
+      .toUpperCase();
+
+
+  /*
+     Numeric format
+
+     1 = A
+     2 = B
+     3 = C
+     4 = D
+  */
+
+  if(v === "1") return "A";
+
+  if(v === "2") return "B";
+
+  if(v === "3") return "C";
+
+  if(v === "4") return "D";
+
+
+  /*
+     Letter format
+  */
+
+  if(
+    v === "A" ||
+    v === "B" ||
+    v === "C" ||
+    v === "D"
+  ){
+
+    return v;
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================
+   LOAD RESULT
+========================================= */
 
 fetch(BACKEND,{
+
   method:"POST",
+
   body:new URLSearchParams({
+
     action:"getDetailedResult",
+
     token,
+
     testId
+
   })
+
 })
+
 .then(r=>r.json())
+
 .then(res=>{
-   document.getElementById("initialLoader").style.display = "none";
+
+  document
+    .getElementById("initialLoader")
+    .style.display = "none";
+
+
   if(res.status !== "OK"){
+
     alert("Result not available");
+
     return;
+
   }
 
-  document.getElementById("score").innerHTML =
-  `<div class="scoreBox">
-     Marks: ${res.score} / ${res.questions.length}
-   </div>`;
 
+  /* =========================================
+     SCORE
+  ========================================= */
 
-  document.getElementById("content").innerHTML =
-    res.questions.map((q,i)=>`
-      <div class="card">
-        <b>Q${i+1}. ${q.question}</b><br><br>
-        ${["A","B","C","D"].map(o=>{
-          let cls="neutral";
-          if(o===q.correct) cls="correct";
-          else if(o===q.selected && o!==q.correct) cls="wrong";
-          return `<div class="option ${cls}">
-            ${o}. ${q.options[o]}
-          </div>`;
-        }).join("")}
+  document
+    .getElementById("score")
+    .innerHTML = `
+
+      <div class="scoreBox">
+
+        Marks:
+        ${res.score} / ${res.questions.length}
+
       </div>
-    `).join("");
+
+    `;
+
+
+  /* =========================================
+     QUESTIONS
+  ========================================= */
+
+  document
+    .getElementById("content")
+    .innerHTML =
+
+    res.questions
+
+      .map((q,i)=>{
+
+        /*
+           Normalize correct answer
+        */
+
+        const correct =
+          normalizeCorrect(q.correct);
+
+
+        /*
+           Normalize selected answer
+        */
+
+        const selected =
+          q.selected
+            ? String(q.selected)
+                .trim()
+                .toUpperCase()
+            : "";
+
+
+        return `
+
+          <div class="card">
+
+            <!-- QUESTION -->
+
+            <div class="questionContent">
+
+              <strong>
+                Q${i+1}.
+              </strong>
+
+              ${renderContent(
+                q.question,
+                "question"
+              )}
+
+            </div>
+
+
+            <!-- OPTIONS -->
+
+            ${["A","B","C","D"]
+
+              .map(o=>{
+
+                let cls =
+                  "neutral";
+
+
+                /*
+                   Correct answer
+                */
+
+                if(o === correct){
+
+                  cls = "correct";
+
+                }
+
+
+                /*
+                   Wrong student answer
+                */
+
+                else if(
+                  o === selected &&
+                  o !== correct
+                ){
+
+                  cls = "wrong";
+
+                }
+
+
+                return `
+
+                  <div
+                    class="option ${cls}"
+                  >
+
+                    <div class="optionContent">
+
+                      <strong>${o}.</strong>
+
+                      ${renderContent(
+                        q.options[o],
+                        "option"
+                      )}
+
+                    </div>
+
+                  </div>
+
+                `;
+
+              })
+
+              .join("")}
+
+          </div>
+
+        `;
+
+      })
+
+      .join("");
+
+})
+
+
+.catch(err=>{
+
+  console.error(err);
+
+  document
+    .getElementById("initialLoader")
+    .innerText =
+      "Failed to load answer sheet.";
+
 });
-    function goBack(){
-  if(confirm("Go back to dashboard?")){
-    location.href = "SDB.html";
+
+
+/* =========================================
+   GO BACK
+========================================= */
+
+function goBack(){
+
+  if(
+    confirm(
+      "Go back to dashboard?"
+    )
+  ){
+
+    location.href =
+      "SDB.html";
+
   }
+
 }
+
 </script>
-<button class="closeBtn" onclick="goBack()">
+
+
+<button
+  class="closeBtn"
+  onclick="goBack()"
+>
+
   Close & Go to Dashboard
+
 </button>
+
+
 </body>
 </html>
