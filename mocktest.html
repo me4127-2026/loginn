@@ -1,367 +1,1299 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <title>Mock Test | ME4127</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
 
 <style>
+
 :root{
   --bg1:#0f2027;
   --bg2:#203a43;
   --bg3:#2c5364;
 }
-*{box-sizing:border-box}
+
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
   font-family:"Segoe UI",Arial,sans-serif;
   min-height:100vh;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--bg1),
+      var(--bg2),
+      var(--bg3)
+    );
+
   display:flex;
   justify-content:center;
+
   padding:20px 10px 80px;
 }
 
-.page{width:100%;max-width:700px}
-.card{
-  background:#fff;
-  border-radius:20px;
-  padding:22px;
-  box-shadow:0 20px 50px rgba(0,0,0,.28);
+.page{
+  width:100%;
+  max-width:700px;
 }
+
+.card{
+
+  background:#fff;
+
+  border-radius:20px;
+
+  padding:22px;
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.28);
+}
+
+
+/* =========================
+   HEADER
+========================= */
 
 .header{
+
   text-align:center;
+
   font-weight:700;
+
   font-size:18px;
+
   margin-bottom:20px;
+
+  line-height:1.4;
 }
 
+
+/* =========================
+   QUESTION
+========================= */
+
 .questionBox{
+
   margin-bottom:24px;
+
   padding:16px;
+
   border-radius:14px;
+
   background:#f5f7fa;
 }
 
 .questionText{
+
   font-weight:700;
+
   margin-bottom:12px;
+
+  line-height:1.5;
 }
 
-.option{
-  padding:10px;
-  margin:6px 0;
+
+/* =========================
+   CONTENT TEXT
+========================= */
+
+.contentText{
+
+  line-height:1.55;
+
+  margin-bottom:10px;
+
+  word-wrap:break-word;
+}
+
+
+/* =========================
+   CONTENT IMAGE
+========================= */
+
+.contentImage{
+
+  display:block;
+
+  max-width:100%;
+
+  max-height:400px;
+
+  width:auto;
+
+  height:auto;
+
+  margin:12px auto;
+
   border-radius:10px;
+
+  object-fit:contain;
+}
+
+
+/* =========================
+   OPTIONS
+========================= */
+
+.option{
+
+  padding:11px;
+
+  margin:8px 0;
+
+  border-radius:10px;
+
   border:1px solid #ccc;
+
   cursor:pointer;
-  transition:0.2s;
+
+  transition:.2s;
+
+  background:#fff;
+
+  line-height:1.45;
 }
 
 .option:hover{
+
   background:#e3f2fd;
+
+  border-color:#90caf9;
 }
 
 .option.selected{
+
   border:2px solid #1565c0;
+
   background:#e3f2fd;
 }
 
-.option.correct{
-  background:#e8f5e9;
-  border:2px solid #2e7d32;
-  color:#1b5e20;
+
+/* Images inside options */
+
+.option .contentImage{
+
+  max-height:250px;
+
+  margin:10px auto;
 }
 
-.option.wrong{
-  background:#fdecea;
-  border:2px solid #c62828;
-  color:#b71c1c;
-}
-
-.option.disabled{
-  pointer-events:none;
-}
-
-button{
-  width:100%;
-  padding:13px;
-  margin-top:14px;
-  border:none;
-  border-radius:30px;
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.btn-submit{
-  background:#2e7d32;
-  color:#fff;
-}
-
-.btn-close{
-  background:#c62828;
-  color:#fff;
-}
-
-.scoreBox{
-  text-align:center;
-  font-size:18px;
-  font-weight:800;
-  padding:12px;
-  border-radius:12px;
-  margin-top:16px;
-  background:#e8f5e9;
-  color:#1b5e20;
-}
-
-.loading{
-  text-align:center;
-  font-weight:700;
-  color:#1565c0;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="page">
-<div class="card">
-
-<div class="header" id="mockTitle">
-Loading Mock Test...
-</div>
-
-<div id="loading" class="loading">
-Please wait...
-</div>
-
-<div id="questionsContainer"></div>
-
-<button id="submitBtn" class="btn-submit" style="display:none">
-Submit Mock Test
-</button>
-
-<button id="closeBtn" class="btn-close" style="display:none">
-Close
-</button>
-
-</div>
-</div>
-
-<script src="config.js"></script>
-<script>
-
-const BACKEND = BACKEND_URL;
-const token = sessionStorage.getItem("token");
-
-if(!token){
-  location.replace("index.html");
-}
-
-const params = new URLSearchParams(location.search);
-const mockId = params.get("mock");
-const mode = params.get("mode"); // fresh or review
-
-const loading = document.getElementById("loading");
-const container = document.getElementById("questionsContainer");
-const submitBtn = document.getElementById("submitBtn");
-const closeBtn = document.getElementById("closeBtn");
-const mockTitle = document.getElementById("mockTitle");
-
-let questions = [];
-let studentAnswers = {};
-
-if(!mockId){
-  location.replace("SDB.html");
-}
-
-/* =========================
-   FETCH QUESTIONS
-========================= */
-
-fetch(BACKEND,{
-  method:"POST",
-  body:new URLSearchParams({
-    action:"getMockQuestions",
-    token,
-    mockId
-  })
-})
-.then(r=>r.json())
-.then(res=>{
-
-  if(res.status !== "OK"){
-    container.innerHTML = "<b>Unable to load mock test.</b>";
-    loading.style.display = "none";
-    return;
-  }
-
-  // 🔥 ADD THIS LINE HERE (VERY IMPORTANT)
-  mockTitle.innerText = res.name;
-
-  questions = res.questions;
-
-  if(mode !== "fresh"){
-    questions.forEach(q=>{
-      if(q.studentAnswer !== undefined){
-        studentAnswers[q.id] = q.studentAnswer;
-      }
-    });
-  }
-
-  renderQuestions();
-
-  loading.style.display = "none";
-
-  if(mode === "fresh"){
-    submitBtn.style.display = "block";
-  }
-  else{
-    closeBtn.style.display = "block";
-    applyReviewMode();
-  }
-
-});
-
-/* =========================
-   RENDER QUESTIONS
-========================= */
-
-function renderQuestions(){
-
-  container.innerHTML = questions.map((q,index)=>`
-
-    <div class="questionBox" id="q_${q.id}">
-      <div class="questionText">
-        Q${index+1}. ${q.question}
-      </div>
-
-      ${q.options.map((opt,i)=>`
-        <div class="option"
-             onclick="selectOption('${q.id}',${i},this)">
-          ${opt}
-        </div>
-      `).join("")}
-    </div>
-
-  `).join("");
-
-}
-
-/* =========================
-   SELECT OPTION (Fresh Mode)
-========================= */
-
-function selectOption(qid, optionIndex, element){
-
-  if(mode !== "fresh") return;
-
-  const parent = element.parentElement;
-  parent.querySelectorAll(".option").forEach(o=>{
-    o.classList.remove("selected");
-  });
-
-  element.classList.add("selected");
-
-  studentAnswers[qid] = optionIndex;
-}
-
-/* =========================
-   SUBMIT MOCK TEST
-========================= */
-
-submitBtn.onclick = function(){
-
-  if(questions.some(q => studentAnswers[q.id] === undefined)){
-    alert("Please answer all questions before submitting.");
-    return;
-  }
-
-  submitBtn.disabled = true;
-  submitBtn.innerText = "Submitting...";
-
-  fetch(BACKEND,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"submitMock",
-      token,
-      mockId,
-      answers: JSON.stringify(studentAnswers)
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-
-    if(res.status === "OK"){
-      showScore(res.score, res.total);
-      applyReviewMode(res.correctAnswers);
-    }
-    else{
-      alert("Submission failed.");
-    }
-
-  });
-
-};
 
 /* =========================
    REVIEW MODE
 ========================= */
 
-function applyReviewMode(correctMap){
+.option.correct{
 
-  submitBtn.style.display = "none";
-  closeBtn.style.display = "block";
+  background:#e8f5e9;
 
-  questions.forEach(q=>{
+  border:2px solid #2e7d32;
 
-    const qBox = document.getElementById("q_"+q.id);
-    const options = qBox.querySelectorAll(".option");
+  color:#1b5e20;
+}
 
-    const correctIndex = correctMap
-      ? correctMap[q.id]
-      : q.correct;
+.option.wrong{
 
-    const studentAns = studentAnswers[q.id] ?? q.studentAnswer;
+  background:#fdecea;
 
-    options.forEach((opt,i)=>{
-      opt.classList.add("disabled");
+  border:2px solid #c62828;
 
-      if(i === correctIndex){
-        opt.classList.add("correct");
+  color:#b71c1c;
+}
+
+.option.disabled{
+
+  pointer-events:none;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button{
+
+  width:100%;
+
+  padding:13px;
+
+  margin-top:14px;
+
+  border:none;
+
+  border-radius:30px;
+
+  font-size:15px;
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+button:disabled{
+
+  opacity:.6;
+
+  cursor:not-allowed;
+}
+
+.btn-submit{
+
+  background:#2e7d32;
+
+  color:#fff;
+}
+
+.btn-close{
+
+  background:#c62828;
+
+  color:#fff;
+}
+
+
+/* =========================
+   SCORE
+========================= */
+
+.scoreBox{
+
+  text-align:center;
+
+  font-size:18px;
+
+  font-weight:800;
+
+  padding:12px;
+
+  border-radius:12px;
+
+  margin-top:16px;
+
+  margin-bottom:20px;
+
+  background:#e8f5e9;
+
+  color:#1b5e20;
+}
+
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+
+  text-align:center;
+
+  font-weight:700;
+
+  color:#1565c0;
+
+  padding:20px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  body{
+
+    padding:
+      10px
+      6px
+      50px;
+  }
+
+  .card{
+
+    padding:15px;
+
+    border-radius:16px;
+  }
+
+  .header{
+
+    font-size:16px;
+
+    margin-bottom:16px;
+  }
+
+  .questionBox{
+
+    padding:12px;
+
+    margin-bottom:18px;
+  }
+
+  .questionText{
+
+    font-size:15px;
+  }
+
+  .contentImage{
+
+    max-height:300px;
+  }
+
+  .option{
+
+    padding:10px;
+
+    font-size:14px;
+  }
+
+  .option .contentImage{
+
+    max-height:200px;
+  }
+
+}
+
+
+/* =========================
+   VERY SMALL SCREENS
+========================= */
+
+@media(max-width:380px){
+
+  .card{
+
+    padding:12px;
+  }
+
+  .questionBox{
+
+    padding:10px;
+  }
+
+  .contentImage{
+
+    max-height:250px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+  <div class="card">
+
+
+    <!-- =========================
+         MOCK TEST TITLE
+    ========================== -->
+
+    <div
+      class="header"
+      id="mockTitle"
+    >
+      Loading Mock Test...
+    </div>
+
+
+    <!-- =========================
+         LOADING MESSAGE
+    ========================== -->
+
+    <div
+      id="loading"
+      class="loading"
+    >
+      Please wait...
+    </div>
+
+
+    <!-- =========================
+         QUESTIONS
+    ========================== -->
+
+    <div id="questionsContainer"></div>
+
+
+    <!-- =========================
+         SUBMIT
+    ========================== -->
+
+    <button
+      id="submitBtn"
+      class="btn-submit"
+      style="display:none"
+    >
+      Submit Mock Test
+    </button>
+
+
+    <!-- =========================
+         CLOSE
+    ========================== -->
+
+    <button
+      id="closeBtn"
+      class="btn-close"
+      style="display:none"
+    >
+      Close
+    </button>
+
+
+  </div>
+
+</div>
+
+
+<script src="config.js"></script>
+
+
+<script>
+
+/* =========================================================
+   BASIC SETUP
+========================================================= */
+
+const BACKEND = BACKEND_URL;
+
+const token =
+  sessionStorage.getItem("token");
+
+
+if(!token){
+
+  location.replace("index.html");
+
+}
+
+
+/* =========================================================
+   URL PARAMETERS
+========================================================= */
+
+const params =
+  new URLSearchParams(
+    location.search
+  );
+
+const mockId =
+  params.get("mock");
+
+const mode =
+  params.get("mode");   // fresh or review
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const loading =
+  document.getElementById("loading");
+
+const container =
+  document.getElementById(
+    "questionsContainer"
+  );
+
+const submitBtn =
+  document.getElementById(
+    "submitBtn"
+  );
+
+const closeBtn =
+  document.getElementById(
+    "closeBtn"
+  );
+
+const mockTitle =
+  document.getElementById(
+    "mockTitle"
+  );
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let questions = [];
+
+let studentAnswers = {};
+
+
+/* =========================================================
+   CHECK MOCK ID
+========================================================= */
+
+if(!mockId){
+
+  location.replace("SDB.html");
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+   Prevents text returned from backend from
+   accidentally being interpreted as HTML.
+========================================================= */
+
+function escapeHTML(value){
+
+  if(value === null ||
+     value === undefined){
+
+    return "";
+  }
+
+  return String(value)
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+}
+
+
+/* =========================================================
+   NORMALIZE CONTENT
+========================================================= */
+
+/*
+   Supported formats:
+
+   1. Text only
+
+      "What is BFS?"
+
+   2. Image only
+
+      {
+        image:"images/q1.png"
       }
 
-      if(studentAns !== undefined && i === studentAns && i !== correctIndex){
-        opt.classList.add("wrong");
+   3. Text + image
+
+      {
+        text:"What is shown?",
+        image:"images/q1.png"
       }
-    });
+
+*/
+
+function renderContent(content){
+
+  if(
+    content === null ||
+    content === undefined ||
+    content === ""
+  ){
+
+    return "";
+
+  }
+
+
+  /* -----------------------------------------
+     BACKWARD COMPATIBILITY
+
+     Existing backend returns plain text
+  ----------------------------------------- */
+
+  if(typeof content === "string"){
+
+    return `
+      <div class="contentText">
+        ${escapeHTML(content)}
+      </div>
+    `;
+
+  }
+
+
+  /* -----------------------------------------
+     OBJECT FORMAT
+  ----------------------------------------- */
+
+  let html = "";
+
+
+  /* TEXT */
+
+  if(
+    content.text !== null &&
+    content.text !== undefined &&
+    String(content.text).trim() !== ""
+  ){
+
+    html += `
+      <div class="contentText">
+        ${escapeHTML(content.text)}
+      </div>
+    `;
+
+  }
+
+
+  /* IMAGE */
+
+  if(
+    content.image !== null &&
+    content.image !== undefined &&
+    String(content.image).trim() !== ""
+  ){
+
+    html += `
+      <img
+        class="contentImage"
+        src="${escapeHTML(content.image)}"
+        alt="Question image"
+        loading="lazy"
+        onerror="this.style.display='none';"
+      >
+    `;
+
+  }
+
+
+  return html;
+
+}
+
+
+/* =========================================================
+   FETCH QUESTIONS
+========================================================= */
+
+fetch(
+
+  BACKEND,
+
+  {
+
+    method:"POST",
+
+    body:new URLSearchParams({
+
+      action:"getMockQuestions",
+
+      token,
+
+      mockId
+
+    })
+
+  }
+
+)
+
+.then(
+  r => r.json()
+)
+
+.then(
+  res => {
+
+
+    /* -----------------------------------------
+       ERROR
+    ----------------------------------------- */
+
+    if(res.status !== "OK"){
+
+      container.innerHTML =
+        "<b>Unable to load mock test.</b>";
+
+      loading.style.display =
+        "none";
+
+      return;
+
+    }
+
+
+    /* -----------------------------------------
+       MOCK TITLE
+    ----------------------------------------- */
+
+    mockTitle.innerText =
+      res.name;
+
+
+    /* -----------------------------------------
+       QUESTIONS
+    ----------------------------------------- */
+
+    questions =
+      res.questions || [];
+
+
+    /* -----------------------------------------
+       EXISTING ANSWERS
+
+       Needed for review mode
+    ----------------------------------------- */
+
+    if(mode !== "fresh"){
+
+      questions.forEach(
+        q => {
+
+          if(
+            q.studentAnswer !==
+            undefined
+          ){
+
+            studentAnswers[q.id] =
+              q.studentAnswer;
+
+          }
+
+        }
+      );
+
+    }
+
+
+    /* -----------------------------------------
+       RENDER
+    ----------------------------------------- */
+
+    renderQuestions();
+
+
+    loading.style.display =
+      "none";
+
+
+    /* -----------------------------------------
+       MODE
+    ----------------------------------------- */
+
+    if(mode === "fresh"){
+
+      submitBtn.style.display =
+        "block";
+
+    }
+
+    else{
+
+      closeBtn.style.display =
+        "block";
+
+      applyReviewMode();
+
+    }
+
+  }
+
+)
+
+.catch(
+  error => {
+
+    console.error(error);
+
+    loading.style.display =
+      "none";
+
+    container.innerHTML =
+      "<b>Unable to connect to the server.</b>";
+
+  }
+);
+
+
+/* =========================================================
+   RENDER QUESTIONS
+========================================================= */
+
+function renderQuestions(){
+
+  container.innerHTML =
+
+    questions.map(
+      (q,index) => {
+
+
+        /*
+          Question can be:
+
+          "What is BFS?"
+
+          OR
+
+          {
+            text:"What is BFS?",
+            image:"..."
+          }
+        */
+
+
+        const questionHTML =
+          renderContent(q.question);
+
+
+        /*
+          Options can similarly be:
+
+          "Breadth First Search"
+
+          OR
+
+          {
+            text:"Breadth First Search",
+            image:"..."
+          }
+        */
+
+        const optionsHTML =
+          (q.options || [])
+
+          .map(
+            (opt,i) => `
+
+              <div
+                class="option"
+                onclick="
+                  selectOption(
+                    '${escapeHTML(q.id)}',
+                    ${i},
+                    this
+                  )
+                "
+              >
+
+                ${renderContent(opt)}
+
+              </div>
+
+            `
+          )
+
+          .join("");
+
+
+        return `
+
+          <div
+            class="questionBox"
+            id="q_${escapeHTML(q.id)}"
+          >
+
+            <div class="questionText">
+
+              Q${index + 1}.
+
+              ${questionHTML}
+
+            </div>
+
+
+            <div class="optionsContainer">
+
+              ${optionsHTML}
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    )
+
+    .join("");
+
+}
+
+
+/* =========================================================
+   SELECT OPTION
+========================================================= */
+
+function selectOption(
+  qid,
+  optionIndex,
+  element
+){
+
+  /* Review mode cannot be changed */
+
+  if(mode !== "fresh"){
+
+    return;
+
+  }
+
+
+  const parent =
+    element.parentElement;
+
+
+  /*
+     Remove previous selection
+  */
+
+  parent
+    .querySelectorAll(".option")
+    .forEach(
+      o => {
+
+        o.classList.remove(
+          "selected"
+        );
+
+      }
+    );
+
+
+  /*
+     Select current option
+  */
+
+  element.classList.add(
+    "selected"
+  );
+
+
+  /*
+     Store answer
+  */
+
+  studentAnswers[qid] =
+    optionIndex;
+
+}
+
+
+/* =========================================================
+   SUBMIT MOCK TEST
+========================================================= */
+
+submitBtn.onclick =
+function(){
+
+
+  /* -----------------------------------------
+     CHECK ALL QUESTIONS ANSWERED
+  ----------------------------------------- */
+
+  if(
+    questions.some(
+      q =>
+        studentAnswers[q.id] ===
+        undefined
+    )
+  ){
+
+    alert(
+      "Please answer all questions before submitting."
+    );
+
+    return;
+
+  }
+
+
+  /* -----------------------------------------
+     DISABLE BUTTON
+  ----------------------------------------- */
+
+  submitBtn.disabled =
+    true;
+
+  submitBtn.innerText =
+    "Submitting...";
+
+
+  /* -----------------------------------------
+     SUBMIT TO BACKEND
+  ----------------------------------------- */
+
+  fetch(
+
+    BACKEND,
+
+    {
+
+      method:"POST",
+
+      body:new URLSearchParams({
+
+        action:"submitMock",
+
+        token,
+
+        mockId,
+
+        answers:
+          JSON.stringify(
+            studentAnswers
+          )
+
+      })
+
+    }
+
+  )
+
+  .then(
+    r => r.json()
+  )
+
+  .then(
+    res => {
+
+
+      if(res.status === "OK"){
+
+        /* Show score */
+
+        showScore(
+          res.score,
+          res.total
+        );
+
+
+        /*
+           Display correct/wrong answers
+        */
+
+        applyReviewMode(
+          res.correctAnswers
+        );
+
+      }
+
+      else{
+
+        alert(
+          "Submission failed."
+        );
+
+        submitBtn.disabled =
+          false;
+
+        submitBtn.innerText =
+          "Submit Mock Test";
+
+      }
+
+    }
+
+  )
+
+  .catch(
+    error => {
+
+      console.error(error);
+
+      alert(
+        "Unable to submit the mock test."
+      );
+
+      submitBtn.disabled =
+        false;
+
+      submitBtn.innerText =
+        "Submit Mock Test";
+
+    }
+  );
+
+};
+
+
+/* =========================================================
+   REVIEW MODE
+========================================================= */
+
+function applyReviewMode(
+  correctMap
+){
+
+  submitBtn.style.display =
+    "none";
+
+  closeBtn.style.display =
+    "block";
+
+
+  questions.forEach(
+    q => {
+
+
+      const qBox =
+        document.getElementById(
+          "q_" + q.id
+        );
+
+
+      if(!qBox){
+
+        return;
+
+      }
+
+
+      const options =
+        qBox.querySelectorAll(
+          ".option"
+        );
+
+
+      /*
+         If correctMap is supplied
+         after submission, use it.
+
+         Otherwise use q.correct
+         for existing review mode.
+      */
+
+      const correctIndex =
+        correctMap
+          ? correctMap[q.id]
+          : q.correct;
+
+
+      /*
+         Student answer can come from:
+
+         studentAnswers
+
+         OR
+
+         q.studentAnswer
+      */
+
+      const studentAns =
+        studentAnswers[q.id] ??
+        q.studentAnswer;
+
+
+      options.forEach(
+        (opt,i) => {
+
+
+          /* Disable clicking */
+
+          opt.classList.add(
+            "disabled"
+          );
+
+
+          /* Correct answer */
+
+          if(
+            i === correctIndex
+          ){
+
+            opt.classList.add(
+              "correct"
+            );
+
+          }
+
+
+          /* Wrong student answer */
+
+          if(
+
+            studentAns !==
+            undefined &&
+
+            i === studentAns &&
+
+            i !== correctIndex
+
+          ){
+
+            opt.classList.add(
+              "wrong"
+            );
+
+          }
+
+        }
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SHOW SCORE
+========================================================= */
+
+function showScore(
+  score,
+  total
+){
+
+  const scoreDiv =
+    document.createElement(
+      "div"
+    );
+
+
+  scoreDiv.className =
+    "scoreBox";
+
+
+  scoreDiv.innerText =
+    `Your Score: ${score} / ${total}`;
+
+
+  container.prepend(
+    scoreDiv
+  );
+
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
 
   });
 
 }
 
-/* =========================
-   SHOW SCORE
-========================= */
 
-function showScore(score,total){
-
-  const scoreDiv = document.createElement("div");
-  scoreDiv.className = "scoreBox";
-  scoreDiv.innerText = `Your Score: ${score} / ${total}`;
-  container.prepend(scoreDiv);
-  window.scrollTo({ top: 0, behavior: "smooth" });
-
-}
-
-/* =========================
+/* =========================================================
    CLOSE BUTTON
-========================= */
+========================================================= */
 
-closeBtn.onclick = function(){
-  location.replace("SDB.html");
+closeBtn.onclick =
+function(){
+
+  location.replace(
+    "SDB.html"
+  );
+
 };
 
 </script>
