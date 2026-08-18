@@ -6,12 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+
 body{
   margin:0;
   font-family:"Segoe UI",Arial,sans-serif;
   background:#f4f6f8;
   padding:14px;
 }
+
 .card{
   max-width:520px;
   margin:auto;
@@ -20,6 +22,7 @@ body{
   padding:20px;
   box-shadow:0 12px 35px rgba(0,0,0,.25);
 }
+
 .timer{
   text-align:center;
   font-size:22px;
@@ -27,21 +30,79 @@ body{
   color:#c62828;
   margin-bottom:14px;
 }
+
+/* =========================
+   QUESTION
+========================= */
+
 .question{
   font-weight:700;
   margin-bottom:12px;
 }
+
+.questionContent{
+  margin-bottom:16px;
+}
+
+
+/* =========================
+   OPTIONS
+========================= */
+
 .option{
   padding:12px;
   margin-top:10px;
   border-radius:10px;
   border:2px solid #ddd;
   cursor:pointer;
+  transition:0.2s;
 }
+
+.option:hover{
+  background:#f5f9ff;
+}
+
 .option.selected{
   border-color:#1565c0;
   background:#e3f2fd;
 }
+
+
+/* =========================
+   CONTENT IMAGES
+========================= */
+
+.contentImage{
+  display:block;
+  max-width:100%;
+  width:auto;
+  height:auto;
+  max-height:320px;
+  object-fit:contain;
+  margin:12px auto;
+  border-radius:10px;
+}
+
+
+/* Question image */
+
+.questionContent .contentImage{
+  max-height:300px;
+}
+
+
+/* Option image */
+
+.optionContent .contentImage{
+  max-height:180px;
+  margin:10px auto 4px;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
 button{
   margin-top:18px;
   width:100%;
@@ -53,7 +114,17 @@ button{
   background:#1565c0;
   color:#fff;
 }
-  #submitOverlay{
+
+button:disabled{
+  background:#999;
+}
+
+
+/* =========================
+   SUBMIT OVERLAY
+========================= */
+
+#submitOverlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.4);
@@ -84,219 +155,748 @@ button{
 }
 
 @keyframes spin{
-  to{ transform:rotate(360deg); }
+  to{
+    transform:rotate(360deg);
+  }
 }
-button:disabled{background:#999;}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+  body{
+    padding:10px;
+  }
+
+  .card{
+    padding:16px;
+    border-radius:15px;
+  }
+
+  .contentImage{
+    max-height:260px;
+  }
+
+  .questionContent .contentImage{
+    max-height:240px;
+  }
+
+  .optionContent .contentImage{
+    max-height:150px;
+  }
+
+}
+
 </style>
 </head>
+
 
 <body>
 
 <div class="card">
 
   <!-- LOADING -->
+
   <div id="loadingMsg"
        style="text-align:center;font-weight:700;color:#c62828;">
+
     Loading… Please wait
+
   </div>
 
+
   <!-- TEST UI -->
+
   <div id="testUI" style="display:none;">
-    <div class="timer" id="timer">05:00</div>
-    <div class="question" id="questionText"></div>
+
+    <div class="timer" id="timer">
+      05:00
+    </div>
+
+
+    <div class="questionContent">
+
+      <div class="question"
+           id="questionText">
+      </div>
+
+    </div>
+
+
     <div id="options"></div>
-    <button id="nextBtn" onclick="next()">Next</button>
+
+
+    <button id="nextBtn"
+            onclick="next()">
+
+      Next
+
+    </button>
+
   </div>
 
 </div>
+
+
 <script src="config.js"></script>
+
 <script>
+
 const BACKEND = BACKEND_URL;
-const token = sessionStorage.getItem("token");
-const testId = new URLSearchParams(location.search).get("test");
+
+const token =
+  sessionStorage.getItem("token");
+
+const testId =
+  new URLSearchParams(location.search)
+    .get("test");
+
 
 if(!token || !testId){
+
   alert("Invalid session");
+
   location.replace("index.html");
+
 }
 
 
 let questions = [];
+
 let index = 0;
+
 let answers = {};
+
 let selected = null;
-let timeLeft = 5 * 60;   // 5 MINUTES
+
+let timeLeft = 5 * 60;
+
 let timerHandle;
+
 let submitted = false;
 
-/* START TEST */
-fetch(BACKEND,{
-  method:"POST",
-  body:new URLSearchParams({ action:"startTest", token, testId })
-})
-.then(r=>r.json())
-.then(res=>{
-  if(res.status !== "STARTED"){
-    alert("You cannot attempt this test");
-    location.replace("SDB.html");
-    return;
+
+/* =========================================
+   GITHUB IMAGE BASE
+========================================= */
+
+const GITHUB_IMAGE_BASE =
+  "https://me4127-2026.github.io/loginn/";
+
+
+/* =========================================
+   IMAGE URL FUNCTION
+========================================= */
+
+function getImageURL(imagePath){
+
+  if(!imagePath){
+    return "";
   }
+
+
+  imagePath =
+    String(imagePath).trim();
+
+
+  /*
+     Already a complete URL
+  */
+
+  if(
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://")
+  ){
+
+    return imagePath;
+
+  }
+
+
+  /*
+     Remove leading slash
+  */
+
+  imagePath =
+    imagePath.replace(/^\/+/, "");
+
+
+  return GITHUB_IMAGE_BASE + imagePath;
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================
+   RENDER TEXT / IMAGE / TEXT+IMAGE
+========================================= */
+
+function renderContent(content, type){
+
+  if(
+    content === null ||
+    content === undefined
+  ){
+
+    return "";
+
+  }
+
+
+  /*
+     TEXT ONLY
+  */
+
+  if(
+    typeof content === "string" ||
+    typeof content === "number"
+  ){
+
+    return escapeHTML(content);
+
+  }
+
+
+  /*
+     OBJECT CONTENT
+  */
+
+  if(typeof content === "object"){
+
+    let html = "";
+
+
+    /*
+       TEXT
+    */
+
+    if(
+      content.text !== undefined &&
+      content.text !== null &&
+      String(content.text).trim() !== ""
+    ){
+
+      html += `
+        <div class="contentText">
+          ${escapeHTML(content.text)}
+        </div>
+      `;
+
+    }
+
+
+    /*
+       IMAGE
+    */
+
+    if(
+      content.image !== undefined &&
+      content.image !== null &&
+      String(content.image).trim() !== ""
+    ){
+
+      const imageURL =
+        getImageURL(content.image);
+
+
+      html += `
+        <img
+          class="contentImage"
+          src="${escapeHTML(imageURL)}"
+          alt="${type === "question"
+            ? "Question image"
+            : "Option image"}"
+          loading="eager"
+          onerror="this.style.display='none';"
+        >
+      `;
+
+    }
+
+
+    return html;
+
+  }
+
+
+  return "";
+
+}
+
+
+/* =========================================
+   START TEST
+========================================= */
+
+fetch(BACKEND,{
+
+  method:"POST",
+
+  body:new URLSearchParams({
+
+    action:"startTest",
+
+    token,
+
+    testId
+
+  })
+
+})
+
+.then(r=>r.json())
+
+.then(res=>{
+
+  if(res.status !== "STARTED"){
+
+    alert("You cannot attempt this test");
+
+    location.replace("SDB.html");
+
+    return;
+
+  }
+
+
+  /*
+     Use backend duration if supplied.
+     Otherwise 5 minutes.
+  */
+
+  if(res.duration){
+
+    timeLeft =
+      Number(res.duration) * 60;
+
+  }
+
+
   loadQuestions();
+
   startTimer();
+
 });
 
-/* LOAD QUESTIONS */
+
+/* =========================================
+   LOAD QUESTIONS
+========================================= */
+
 function loadQuestions(){
+
   fetch(BACKEND,{
+
     method:"POST",
+
     body:new URLSearchParams({
+
       action:"getQuestions",
+
       token,
+
       testId
+
     })
+
   })
+
   .then(r=>r.json())
+
   .then(res=>{
 
-    console.log("Question API response:", res); // DEBUG (keep for now)
+    console.log(
+      "Question API response:",
+      res
+    );
 
-    if(!res || res.status !== "OK"){
-      alert("Questions not available for this test");
+
+    if(
+      !res ||
+      res.status !== "OK"
+    ){
+
+      alert(
+        "Questions not available for this test"
+      );
+
       location.replace("SDB.html");
+
       return;
+
     }
 
-    if(!res.questions || res.questions.length === 0){
+
+    if(
+      !res.questions ||
+      res.questions.length === 0
+    ){
+
       alert("No questions found");
+
       location.replace("SDB.html");
+
       return;
+
     }
 
-    questions = res.questions;
 
-    // Hide loading
-    document.getElementById("loadingMsg").style.display = "none";
+    questions =
+      res.questions;
 
-    // Show test UI
-    document.getElementById("testUI").style.display = "block";
+
+    /*
+       Hide loading
+    */
+
+    document
+      .getElementById("loadingMsg")
+      .style.display = "none";
+
+
+    /*
+       Show test UI
+    */
+
+    document
+      .getElementById("testUI")
+      .style.display = "block";
+
 
     index = 0;
+
     render();
+
   })
+
   .catch(err=>{
+
     console.error(err);
-    alert("Failed to load questions");
+
+    alert(
+      "Failed to load questions"
+    );
+
     location.replace("SDB.html");
+
   });
+
 }
-/* TIMER */
+
+
+/* =========================================
+   TIMER
+========================================= */
+
 function startTimer(){
-  timerHandle = setInterval(()=>{
-    timeLeft--;
-    const m = Math.floor(timeLeft/60);
-    const s = timeLeft % 60;
-    timer.innerText =
-      `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 
-    if(timeLeft <= 0){
-      clearInterval(timerHandle);
-      submit(true);
-    }
-  },1000);
+  timerHandle =
+    setInterval(()=>{
+
+      timeLeft--;
+
+
+      const m =
+        Math.floor(timeLeft / 60);
+
+      const s =
+        timeLeft % 60;
+
+
+      timer.innerText =
+        `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+
+
+      if(timeLeft <= 0){
+
+        clearInterval(timerHandle);
+
+        submit(true);
+
+      }
+
+    },1000);
+
 }
 
-/* RENDER QUESTION */
+
+/* =========================================
+   RENDER QUESTION
+========================================= */
+
 function render(){
-  const q = questions[index];
 
-  selected = null; // 🔴 IMPORTANT FIX
+  const q =
+    questions[index];
 
-  questionText.innerText = `Q${index+1}. ${q.q}`;
 
-  options.innerHTML = ["A","B","C","D"].map(o=>`
-    <div class="option" onclick="pick('${o}',this)">
-      ${o}. ${q[o]}
-    </div>
-  `).join("");
+  selected = null;
+
+
+  /*
+     QUESTION
+  */
+
+  questionText.innerHTML =
+
+    `<strong>Q${index+1}.</strong>
+     ${renderContent(q.q,"question")}`;
+
+
+  /*
+     OPTIONS
+  */
+
+  options.innerHTML =
+
+    ["A","B","C","D"]
+
+      .map(o=>`
+
+        <div
+          class="option"
+          onclick="pick('${o}',this)"
+        >
+
+          <div class="optionContent">
+
+            <strong>${o}.</strong>
+
+            ${renderContent(q[o],"option")}
+
+          </div>
+
+        </div>
+
+      `)
+
+      .join("");
+
+
+  /*
+     BUTTON
+  */
 
   nextBtn.innerText =
-    index === questions.length - 1 ? "Submit" : "Next";
+
+    index === questions.length - 1
+
+      ? "Submit"
+
+      : "Next";
+
 }
 
-/* PICK OPTION */
+
+/* =========================================
+   PICK OPTION
+========================================= */
+
 function pick(v,el){
-  document.querySelectorAll(".option")
-    .forEach(o=>o.classList.remove("selected"));
+
+  document
+    .querySelectorAll(".option")
+    .forEach(o=>
+      o.classList.remove("selected")
+    );
+
+
   el.classList.add("selected");
+
   selected = v;
+
 }
 
-/* NEXT / SUBMIT */
+
+/* =========================================
+   NEXT / SUBMIT
+========================================= */
+
 function next(){
+
   if(!selected){
+
     alert("Select an option");
+
     return;
+
   }
 
-  answers[questions[index].id] = selected;
 
-  if(index === questions.length-1){
+  answers[
+    questions[index].id
+  ] = selected;
+
+
+  if(
+    index === questions.length - 1
+  ){
+
     submit(false);
-  }else{
-    index++;
-    render();
+
   }
+
+  else{
+
+    index++;
+
+    render();
+
+  }
+
 }
 
-/* SUBMIT */
+
+/* =========================================
+   SUBMIT
+========================================= */
+
 function submit(auto){
-  if(submitted) return;
+
+  if(submitted)
+    return;
+
+
   submitted = true;
+
 
   clearInterval(timerHandle);
 
-  // 🔒 LOCK UI
-  document.getElementById("submitOverlay").style.display = "flex";
-  document.getElementById("nextBtn").disabled = true;
+
+  /*
+     LOCK UI
+  */
+
+  document
+    .getElementById("submitOverlay")
+    .style.display = "flex";
+
+
+  document
+    .getElementById("nextBtn")
+    .disabled = true;
+
 
   fetch(BACKEND,{
+
     method:"POST",
+
     body:new URLSearchParams({
+
       action:"submitTest",
+
       token,
+
       testId,
-      auto: auto ? "1":"0",
-      answers: JSON.stringify(answers)
+
+      auto:
+        auto ? "1" : "0",
+
+      answers:
+        JSON.stringify(answers)
+
     })
+
   })
-  .then(r => r.json())
-  .then(res => {
+
+  .then(r=>r.json())
+
+  .then(res=>{
 
     if(res.status === "SUBMITTED"){
-      alert("Test submitted successfully");
-    }else{
-      alert("Submission issue. Please contact faculty.");
+
+      alert(
+        "Test submitted successfully"
+      );
+
     }
 
+    else{
+
+      alert(
+        "Submission issue. Please contact faculty."
+      );
+
+    }
+
+
     location.replace("SDB.html");
+
   })
+
   .catch(()=>{
-    alert("Network error during submission");
+
+    alert(
+      "Network error during submission"
+    );
+
     location.replace("SDB.html");
+
   });
+
 }
 
-/* AUTO SUBMIT RULES */
-document.addEventListener("visibilitychange",()=>{
-  if(document.hidden) submit(true);
-});
-window.addEventListener("beforeunload",()=>submit(true));
+
+/* =========================================
+   AUTO SUBMIT RULES
+========================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  ()=>{
+
+    if(document.hidden)
+      submit(true);
+
+  }
+);
+
+
+window.addEventListener(
+  "beforeunload",
+  ()=>{
+
+    submit(true);
+
+  }
+);
+
 </script>
-<div id="submitOverlay" style="display:none">
+
+
+<!-- SUBMIT OVERLAY -->
+
+<div id="submitOverlay"
+     style="display:none">
+
   <div class="submitBox">
+
     <div class="submitSpinner"></div>
+
     Submitting… Please wait
+
   </div>
+
 </div>
+
+
 </body>
 </html>
