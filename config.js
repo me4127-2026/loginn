@@ -1,1 +1,1 @@
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbw1fyJL9bZ9_4tBVI4xOkbiMvgl-0SIJ8YlXrMAjqRr0xZj86ENNY3rZTyCxKWACeXSMQ/exec"
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwbgS060FEc-avG16oxRh3_IS4E--MF1Yjf8H66ZES7uqzLqozaODqKliV13I1C1G5MuQ/exec"
