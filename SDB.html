@@ -906,8 +906,8 @@ ${t.evaluated ? `onclick="toggleResultPanel('${t.id}')"` : ""}>
             ? `
            <div style="text-align:center;margin-bottom:12px">
   <div class="scoreBox">
-    Marks: ${t.score} / ${t.total}
-  </div>
+  Marks: ${Number(t.score) || 0} / ${t.total}
+</div>
 </div>
  <div style="text-align:left;margin-bottom:6px">
    Test conducted on: 
