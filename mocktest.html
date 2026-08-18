@@ -599,7 +599,32 @@ function escapeHTML(value){
       }
 
 */
+function getImageURL(imagePath){
 
+  if(!imagePath){
+    return "";
+  }
+
+  imagePath = String(imagePath).trim();
+
+  // Already a complete URL
+  if(
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://")
+  ){
+    return imagePath;
+  }
+
+  // GitHub Pages image repository
+  const GITHUB_IMAGE_BASE =
+    "https://me4127-2026.github.io/loginn/";
+
+  // Remove leading slash if present
+  imagePath =
+    imagePath.replace(/^\/+/, "");
+
+  return GITHUB_IMAGE_BASE + imagePath;
+}
 function renderContent(content){
 
   if(
@@ -664,11 +689,11 @@ function renderContent(content){
 
     html += `
       <img
-        class="contentImage"
-        src="${escapeHTML(content.image)}"
-        alt="Question image"
-        loading="lazy"
-        onerror="this.style.display='none';"
+      class="contentImage"
+      src="${getImageURL(content.image)}"
+      alt="Question image"
+      loading="lazy"
+      onerror="this.style.display='none';"
       >
     `;
 
