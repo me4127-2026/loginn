@@ -561,8 +561,7 @@ fetch(BACKEND,{
 
       <div class="scoreBox">
 
-        Marks:
-        ${res.score} / ${res.questions.length}
+        Marks: ${Number(res.score) || 0} / ${res.questions.length}
 
       </div>
 
