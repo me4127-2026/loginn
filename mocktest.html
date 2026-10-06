@@ -655,11 +655,7 @@ function renderContent(content){
 
   if(typeof content === "string"){
 
-    return `
-      <div class="contentText">
-        ${escapeHTML(content)}
-      </div>
-    `;
+    return `<div class="contentText">${escapeHTML(content)}</div>`;
 
   }
 
@@ -679,11 +675,7 @@ function renderContent(content){
     String(content.text).trim() !== ""
   ){
 
-    html += `
-      <div class="contentText">
-        ${escapeHTML(content.text)}
-      </div>
-    `;
+    html += `<div class="contentText">${escapeHTML(content.text)}</div>`;
 
   }
 
@@ -698,11 +690,11 @@ function renderContent(content){
 
     html += `
       <img
-      class="contentImage"
-      src="${getImageURL(content.image)}"
-      alt="Question image"
-      loading="lazy"
-      onerror="this.style.display='none';"
+        class="contentImage"
+        src="${getImageURL(content.image)}"
+        alt="Question image"
+        loading="lazy"
+        onerror="this.style.display='none';"
       >
     `;
 
