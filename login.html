@@ -23,19 +23,25 @@
 
 <style>
 *{box-sizing:border-box;}
-body{
-  font-family:"Segoe UI",Arial,sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  height:100vh;margin:0;
-  display:flex;justify-content:center;align-items:center;
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.card{
-  background:#fff;
-  width:100%;max-width:420px;
-  padding:32px 30px;
-  border-radius:14px;
-  box-shadow:0 15px 40px rgba(0,0,0,.25);
-  animation:fadeIn .6s ease;
+
+.card {
+  background: #fff;
+  width: calc(100% - 30px);
+  max-width: 420px;
+  padding: 32px 30px;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, .25);
+  animation: fadeIn .6s ease;
 }
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(20px);}
@@ -99,13 +105,214 @@ button:disabled{background:#999;cursor:not-allowed;}
   transform:translateY(-1px);
   box-shadow:0 10px 24px rgba(230,126,34,.45);
 }
+  
+/* ===== Modern Rotating Update Banner ===== */
+
+.update-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 66px;
+  padding: 11px 12px;
+  margin-bottom: 20px;
+
+  background: linear-gradient(
+    110deg,
+    #eff6ff,
+    #e0f2fe,
+    #f0fdfa,
+    #eff6ff
+  );
+  background-size: 250% 250%;
+  border: 1px solid #bfdbfe;
+  border-radius: 13px;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.09);
+
+  animation: updateGradient 7s ease infinite;
+  overflow: hidden;
+}
+
+@keyframes updateGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.update-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #2563eb;
+  border-radius: 11px;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.2);
+}
+
+.update-icon span {
+  font-size: 18px;
+  animation: bellPulse 2s ease-in-out infinite;
+}
+
+@keyframes bellPulse {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-10deg); }
+  20%, 40% { transform: rotate(10deg); }
+  50% { transform: rotate(0deg); }
+}
+
+.update-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.update-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+
+  color: #1d4ed8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+}
+
+.update-badge {
+  padding: 3px 7px;
+  background: #dcfce7;
+  color: #15803d;
+  border-radius: 5px;
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  50% { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12); }
+}
+
+.update-message {
+  color: #0f172a;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 600;
+
+  overflow-wrap: anywhere;
+  opacity: 1;
+  transform: translateY(0);
+
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.update-message.fade-out {
+  opacity: 0;
+  transform: translateY(-5px);
+}
+
+.update-message.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.update-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 2px;
+}
+
+.update-indicator span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #93c5fd;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.update-indicator span.active {
+  background: #2563eb;
+  transform: scale(1.35);
+}
+
+/* Small-screen adjustments */
+@media (max-width: 360px) {
+  .update-banner {
+    gap: 8px;
+    padding: 9px;
+    min-height: 62px;
+  }
+
+  .update-icon {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+
+  .update-message {
+    font-size: 11px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .update-banner,
+  .update-icon span,
+  .update-badge {
+    animation: none !important;
+  }
+
+  .update-message {
+    transition: none;
+  }
+}
+
 </style>
 </head>
 
 <body>
 
+
 <div class="card">
+
+  <!-- Rotating Course Updates -->
+  <div class="update-banner" id="updateBanner"
+       role="status" aria-live="polite">
+
+    <div class="update-icon">
+      <span>🔔</span>
+    </div>
+
+    <div class="update-content">
+      <div class="update-heading">
+        <span>WHAT'S NEW</span>
+        <span class="update-badge">NEW</span>
+      </div>
+
+      <div class="update-message" id="updateMessage">
+        New mock test is available!
+      </div>
+    </div>
+
+    <div class="update-indicator" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+  </div>
+
   <h1>Student Login</h1>
+
   <h2>AI & ML Applications in Mechanical Engineering (ME4127)</h2>
 
   <label>Roll Number</label>
@@ -141,7 +348,77 @@ button:disabled{background:#999;cursor:not-allowed;}
   if(sessionStorage.getItem("token")){
   window.location.href = "SDB.html"; // or dashboard.html
 }
-const BACKEND = BACKEND_URL;  
+const BACKEND = BACKEND_URL;
+  
+/* ===== Automatically Rotating Course Updates ===== */
+
+// Edit these messages whenever a new announcement is needed.
+const courseUpdates = [
+  "New mock test is available!",
+  "Prepare for your upcoming class tests.",
+  "Stay updated with ME4127 course activities."
+];
+
+let currentUpdate = 0;
+let updateTimer = null;
+
+const updateMessage = document.getElementById("updateMessage");
+const updateBanner = document.getElementById("updateBanner");
+const updateDots = document.querySelectorAll(".update-indicator span");
+
+function showCourseUpdate(index) {
+  if (!updateMessage) return;
+
+  updateMessage.classList.remove("fade-in");
+  updateMessage.classList.add("fade-out");
+
+  setTimeout(() => {
+    currentUpdate = index;
+
+    updateMessage.textContent = courseUpdates[currentUpdate];
+
+    updateDots.forEach((dot, i) => {
+      dot.classList.toggle("active", i === currentUpdate % updateDots.length);
+    });
+
+    updateMessage.classList.remove("fade-out");
+    updateMessage.classList.add("fade-in");
+  }, 250);
+}
+
+function startUpdateRotation() {
+  if (!updateMessage || courseUpdates.length < 2) return;
+
+  // Highlight the first update initially.
+  updateDots.forEach((dot, i) => {
+    dot.classList.toggle("active", i === 0);
+  });
+
+  // Rotate every 4 seconds.
+  updateTimer = setInterval(() => {
+    const nextUpdate = (currentUpdate + 1) % courseUpdates.length;
+    showCourseUpdate(nextUpdate);
+  }, 3000);
+}
+
+function stopUpdateRotation() {
+  if (updateTimer !== null) {
+    clearInterval(updateTimer);
+    updateTimer = null;
+  }
+}
+
+// Pause rotation when the page is hidden.
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopUpdateRotation();
+  } else if (updateTimer === null) {
+    startUpdateRotation();
+  }
+});
+
+startUpdateRotation();
+
 function login(){
   const roll=document.getElementById("roll").value.trim().toUpperCase();
   const dob=document.getElementById("dob").value;
