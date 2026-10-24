@@ -36,8 +36,8 @@ body {
 
 .card {
   background: #fff;
-  width: calc(100% - 30px);
-  max-width: 420px;
+  width: calc(100% - 24px);
+  max-width: 450px;
   padding: 32px 30px;
   border-radius: 14px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, .25);
@@ -202,14 +202,12 @@ button:disabled{background:#999;cursor:not-allowed;}
 
 .update-message {
   color: #0f172a;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.5;
   font-weight: 600;
-
   overflow-wrap: anywhere;
   opacity: 1;
   transform: translateY(0);
-
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
@@ -248,31 +246,18 @@ button:disabled{background:#999;cursor:not-allowed;}
 @media (max-width: 360px) {
   .update-banner {
     gap: 8px;
-    padding: 9px;
-    min-height: 62px;
+    padding: 10px;
+    min-height: 68px;
   }
 
   .update-icon {
-    width: 32px;
-    height: 32px;
-    flex-basis: 32px;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
   }
 
   .update-message {
-    font-size: 11px;
-  }
-}
-
-/* Respect reduced-motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .update-banner,
-  .update-icon span,
-  .update-badge {
-    animation: none !important;
-  }
-
-  .update-message {
-    transition: none;
+    font-size: 12px;
   }
 }
 
@@ -355,8 +340,7 @@ const BACKEND = BACKEND_URL;
 // Edit these messages whenever a new announcement is needed.
 const courseUpdates = [
   "New mock test is available!",
-  "Prepare for your upcoming class tests.",
-  "Stay updated with ME4127 course activities."
+  "Prepare for your upcoming class tests."
 ];
 
 let currentUpdate = 0;
