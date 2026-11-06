@@ -326,6 +326,9 @@ let answers = {};
 let selected = null;
 
 let timeLeft = 10 * 60;
+let timingMode = "CUSTOM";
+let strictDeadlineEpoch = null;
+let serverClockOffset = 0;
 
 let timerHandle;
 
@@ -521,7 +524,11 @@ fetch(BACKEND,{
 
   if(res.status !== "STARTED"){
 
-    alert("You cannot attempt this test");
+    alert(res.status === "TIME_EXPIRED"
+      ? "The test time has expired."
+      : res.status === "ALREADY_ATTEMPTED"
+        ? "You have already attempted this test."
+        : "You cannot attempt this test");
 
     location.replace("SDB.html");
 
@@ -529,22 +536,23 @@ fetch(BACKEND,{
 
   }
 
+  timingMode = res.timingMode || "CUSTOM";
+  serverClockOffset = Number(res.serverNow || Date.now()) - Date.now();
 
-  /*
-     Use backend duration if supplied.
-     Otherwise 5 minutes.
-  */
-
-  if(res.duration){
-
-    timeLeft =
-      Number(res.duration) * 60;
-
+  if(timingMode === "STRICT"){
+    strictDeadlineEpoch = Number(res.deadlineEpoch);
+    timeLeft = Math.max(0, Number(res.remainingSeconds) || 0);
+  } else if(res.duration){
+    timeLeft = Number(res.duration) * 60;
   }
 
+  if(timeLeft <= 0){
+    alert("The test time has expired.");
+    location.replace("SDB.html");
+    return;
+  }
 
   loadQuestions();
-
   startTimer();
 
 });
@@ -661,33 +669,29 @@ function loadQuestions(){
 
 function startTimer(){
 
-  timerHandle =
-    setInterval(()=>{
+  const updateTimer = () => {
+    if(timingMode === "STRICT" && strictDeadlineEpoch){
+      // Server-issued absolute deadline prevents students gaining time by refreshing.
+      timeLeft = Math.max(0, Math.ceil((strictDeadlineEpoch - (Date.now() + serverClockOffset)) / 1000));
+    } else {
+      timeLeft = Math.max(0, timeLeft);
+    }
 
-      timeLeft--;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    timer.innerText = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
 
+    if(timeLeft <= 0){
+      clearInterval(timerHandle);
+      submit(true);
+      return;
+    }
 
-      const m =
-        Math.floor(timeLeft / 60);
+    if(timingMode !== "STRICT") timeLeft--;
+  };
 
-      const s =
-        timeLeft % 60;
-
-
-      timer.innerText =
-        `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-
-
-      if(timeLeft <= 0){
-
-        clearInterval(timerHandle);
-
-        submit(true);
-
-      }
-
-    },1000);
-
+  updateTimer();
+  timerHandle = setInterval(updateTimer, 1000);
 }
 
 
