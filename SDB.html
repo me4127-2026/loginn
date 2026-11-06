@@ -808,14 +808,17 @@ function toggleClassTests(){
   `;
 }
 
-  /* CASE 2: Strict-start countdown has expired */
-  if (t.strictExpired) {
-    return `
-      <div class="testBtn test-upcoming">
-        ${t.name} (TIME EXPIRED)
+/* CASE 2: Strict-start countdown has expired */
+if (t.strictExpired) {
+  return `
+    <div class="testBtn test-completed">
+      ${t.name} (COMPLETED)
+      <div style="font-size:12px;font-weight:600;margin-top:4px">
+        Test conducted on: ${t.completionDate || "-"}
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
   /* CASE 3: Student is enabled → allow start */
   if (t.enabled) {
