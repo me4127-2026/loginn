@@ -1,159 +1,466 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ME4127 - Course Feedback</title>
+<title>ME4127 | Course Feedback</title>
 
 <style>
+:root {
+  --primary: #263c78;
+  --primary-dark: #192b5c;
+  --accent: #526fe5;
+  --background: #f3f5fb;
+  --text: #202b45;
+  --muted: #718096;
+  --border: #e2e7f0;
+  --danger: #dc3545;
+}
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
   margin: 0;
-  padding: 15px;
+  min-height: 100vh;
+  padding: 35px 18px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%, #e2e9ff 0, transparent 32%),
+    radial-gradient(circle at 90% 90%, #e5eaff 0, transparent 30%),
+    var(--background);
+  color: var(--text);
+}
+
+.page-wrapper {
+  width: 100%;
+  max-width: 780px;
+  margin: auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-size: 27px;
+  box-shadow: 0 8px 20px rgba(38,60,120,.22);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 29px;
+  font-weight: 750;
+  color: var(--primary-dark);
+  letter-spacing: -.5px;
+}
+
+.header p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .card {
-  background: #fff;
-  padding: 22px;
-  border-radius: 16px;
-  width: 100%;
-  max-width: 520px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  background: rgba(255,255,255,.96);
+  border: 1px solid rgba(226,231,240,.9);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 14px 45px rgba(31,48,92,.09);
 }
 
-h2 {
-  text-align: center;
-  color: #203a43;
-  margin: 0 0 8px;
-  font-size: 22px;
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.subtitle {
-  text-align: center;
-  font-size: 13px;
-  color: #666;
-  margin-bottom: 16px;
+.step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.step-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
 }
 
 .progress {
+  height: 7px;
   display: flex;
-  gap: 6px;
-  margin-bottom: 18px;
+  gap: 7px;
+  margin-bottom: 25px;
 }
 
-.progress div {
-  height: 5px;
+.progress-segment {
   flex: 1;
-  background: #ddd;
-  border-radius: 10px;
+  background: #e8ecf5;
+  border-radius: 20px;
+  overflow: hidden;
 }
 
-.progress div.active {
-  background: #267caa;
+.progress-segment.active {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
 }
 
-.page-label {
-  text-align: center;
-  font-weight: 700;
-  color: #267caa;
-  margin-bottom: 15px;
+.section-heading {
+  margin-bottom: 22px;
 }
 
-.q {
-  margin-top: 15px;
-  font-weight: 600;
-  font-size: 14px;
+.section-heading h2 {
+  margin: 0;
+  color: #202c49;
+  font-size: 20px;
+}
+
+.section-heading p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
   line-height: 1.5;
 }
 
-select, textarea {
-  width: 100%;
-  padding: 11px;
-  margin-top: 7px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  background: white;
+.question-card {
+  padding: 19px 20px;
+  margin-bottom: 14px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: #fff;
+  transition: border-color .2s, box-shadow .2s;
 }
 
-select.error, textarea.error {
-  border: 2px solid #e53935;
+.question-card:focus-within {
+  border-color: #9aabf5;
+  box-shadow: 0 0 0 3px rgba(82,111,229,.08);
 }
 
-textarea {
-  min-height: 110px;
-  resize: vertical;
+.question-card.has-error {
+  border-color: var(--danger);
+  background: #fffafa;
 }
 
-.buttons {
+.question-title {
   display: flex;
-  gap: 10px;
-  margin-top: 22px;
-}
-
-button {
-  padding: 12px;
-  background: linear-gradient(135deg,#2c5364,#203a43);
-  color: white;
-  border: none;
-  border-radius: 25px;
-  font-weight: 700;
+  gap: 11px;
+  align-items: flex-start;
+  margin-bottom: 13px;
   font-size: 14px;
-  cursor: pointer;
-  flex: 1;
+  line-height: 1.65;
+  font-weight: 650;
+  color: #293550;
 }
 
-button:disabled {
-  background: #999;
-  cursor: not-allowed;
+.question-number {
+  flex: 0 0 27px;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #edf1ff;
+  color: var(--primary);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.select-wrap {
+  position: relative;
+}
+
+select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 12px 42px 12px 14px;
+  border: 1px solid #dce2ee;
+  border-radius: 9px;
+  background-color: #f9faff;
+  color: #34415d;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: .2s;
+}
+
+select:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.select-wrap::after {
+  content: "⌄";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-58%);
+  font-size: 20px;
+  color: #66769c;
+  pointer-events: none;
+}
+
+select.error,
+textarea.error {
+  border: 1px solid var(--danger);
+  background: #fffafa;
 }
 
 select:disabled,
 textarea:disabled {
-  background: #f2f2f2;
+  opacity: .65;
   cursor: not-allowed;
 }
 
-.secondary {
-  background: #777;
+.suggestion-card {
+  padding: 21px;
+  margin-top: 22px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: #fafbff;
 }
 
-.msg {
-  text-align: center;
-  margin-top: 14px;
-  font-weight: 600;
+.suggestion-card label {
+  display: block;
   font-size: 14px;
-  color: #c62828;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  color: #293550;
 }
 
-.hidden {
-  display: none;
+.required {
+  color: var(--danger);
+}
+
+textarea {
+  width: 100%;
+  min-height: 125px;
+  resize: vertical;
+  padding: 13px 14px;
+  border: 1px solid #dce2ee;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  background: #fff;
+  color: var(--text);
+}
+
+textarea:focus {
+  border-color: var(--accent);
+}
+
+textarea::placeholder {
+  color: #a0a9ba;
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+button {
+  min-height: 46px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
+  flex: 1;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(38,60,120,.2);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: #edf0f7;
+  color: #34415d;
 }
 
 .note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 22px;
+  color: var(--muted);
   font-size: 12px;
-  color: #777;
-  margin-top: 8px;
   text-align: center;
+  line-height: 1.5;
 }
 
-@media(max-width:480px) {
-  .card {
-    padding: 17px;
+.note span {
+  color: #32845e;
+  font-size: 15px;
+}
+
+.msg {
+  min-height: 20px;
+  margin-top: 15px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--danger);
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.footer {
+  margin-top: 22px;
+  text-align: center;
+  color: #8993a8;
+  font-size: 11px;
+}
+
+/* Submission overlay */
+
+.submission-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(18,29,58,.78);
+  backdrop-filter: blur(7px);
+}
+
+.submission-overlay.show {
+  display: flex;
+}
+
+.success-panel {
+  width: 100%;
+  max-width: 370px;
+  padding: 38px 28px;
+  border-radius: 20px;
+  background: white;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  animation: appear .35s ease-out;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.spinner {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 22px;
+  border: 5px solid #e7ebfa;
+  border-top-color: var(--accent);
+  border-right-color: var(--primary);
+  border-radius: 50%;
+  animation: spin .85s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.success-panel h2 {
+  margin: 0 0 10px;
+  color: var(--primary-dark);
+  font-size: 20px;
+}
+
+.success-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media(max-width:600px) {
+  body {
+    padding: 22px 12px;
   }
 
-  h2 {
-    font-size: 20px;
+  .header {
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-size: 25px;
+  }
+
+  .card {
+    padding: 21px 16px;
+    border-radius: 16px;
+  }
+
+  .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .question-card {
+    padding: 16px 13px;
+  }
+
+  .question-title {
+    font-size: 13px;
+  }
+
+  .buttons {
+    gap: 9px;
+  }
+
+  button {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 </style>
@@ -161,72 +468,115 @@ textarea:disabled {
 
 <body>
 
-<div class="card">
+<div class="page-wrapper">
 
-  <h2>Course Feedback</h2>
-
-  <div class="subtitle">
-    AI & ML Applications in Mechanical Engineering (ME4127)
+  <div class="header">
+    <div class="header-icon">✦</div>
+    <h1>Course Feedback</h1>
+    <p>
+      AI &amp; ML Applications in Mechanical Engineering<br>
+      <strong>ME4127</strong>
+    </p>
   </div>
 
-  <div class="progress">
-    <div id="progress1" class="active"></div>
-    <div id="progress2"></div>
+  <div class="card">
+
+    <div class="step-header">
+      <div class="step-title" id="stepTitle">Your Feedback</div>
+      <div class="step-count" id="stepCount">STEP 1 OF 2</div>
+    </div>
+
+    <div class="progress">
+      <div id="progress1" class="progress-segment active"></div>
+      <div id="progress2" class="progress-segment"></div>
+    </div>
+
+    <!-- PAGE 1 -->
+
+    <div id="page1">
+
+      <div class="section-heading">
+        <h2>Teaching &amp; Course Delivery</h2>
+        <p>
+          Please rate the following aspects of the course.
+          Select one response for each question.
+        </p>
+      </div>
+
+      <div id="questions1"></div>
+
+      <div class="buttons">
+        <button type="button" onclick="nextPage()">
+          Continue to Page 2 &nbsp; →
+        </button>
+      </div>
+
+    </div>
+
+    <!-- PAGE 2 -->
+
+    <div id="page2" class="hidden">
+
+      <div class="section-heading">
+        <h2>Learning Experience</h2>
+        <p>
+          Complete the remaining questions and share your suggestions.
+        </p>
+      </div>
+
+      <div id="questions2"></div>
+
+      <div class="suggestion-card">
+        <label for="suggestion">
+          Suggestions to improve the quality of the course and teaching
+          <span class="required">*</span>
+        </label>
+
+        <textarea
+          id="suggestion"
+          placeholder="Please share your suggestions here..."
+          required
+        ></textarea>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="secondary" onclick="previousPage()">
+          ← Previous
+        </button>
+
+        <button type="button" id="submitBtn" onclick="submitFeedback()">
+          Submit Feedback &nbsp; ✓
+        </button>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <span>●</span>
+      All nine questions and the suggestions box are mandatory.
+    </div>
+
+    <div id="msg" class="msg" role="status" aria-live="polite"></div>
+
   </div>
 
-  <!-- PAGE 1 -->
-
-  <div id="page1">
-
-    <div class="page-label">
-      Page 1 of 2 — Questions 1 to 5
-    </div>
-
-    <div id="questions1"></div>
-
-    <div class="buttons">
-      <button onclick="nextPage()">Next →</button>
-    </div>
-
+  <div class="footer">
+    ME4127 · IIEST Shibpur
   </div>
 
-  <!-- PAGE 2 -->
+</div>
 
-  <div id="page2" class="hidden">
+<!-- SUCCESS / REDIRECTION OVERLAY -->
 
-    <div class="page-label">
-      Page 2 of 2 — Questions 6 to 9
-    </div>
-
-    <div id="questions2"></div>
-
-    <div class="q">
-      Suggestions to improve the quality of the course and teaching
-    </div>
-
-    <textarea
-      id="suggestion"
-      placeholder="Enter your suggestions here..."
-    ></textarea>
-
-    <div class="buttons">
-      <button class="secondary" onclick="previousPage()">
-        ← Previous
-      </button>
-
-      <button id="submitBtn" onclick="submitFeedback()">
-        Submit Feedback
-      </button>
-    </div>
-
+<div class="submission-overlay" id="submissionOverlay">
+  <div class="success-panel">
+    <div class="spinner"></div>
+    <h2>Feedback Submitted!</h2>
+    <p>
+      Thank you for sharing your feedback.<br>
+      Redirecting you to your dashboard...
+    </p>
   </div>
-
-  <div class="note">
-    All nine questions and the suggestions box are mandatory.
-  </div>
-
-  <div id="msg" class="msg"></div>
-
 </div>
 
 <script src="config.js"></script>
@@ -237,64 +587,49 @@ const BACKEND = BACKEND_URL;
 const token = sessionStorage.getItem("token");
 
 const msg = document.getElementById("msg");
+const submitBtn = document.getElementById("submitBtn");
 
-// No session: redirect to login
+// Redirect if no session exists
 if (!token) {
-
   alert("Session expired. Please login again.");
   location.replace("index.html");
-
 }
 
-// Disable the form until session verification is complete
+// Enable or disable all form controls
 function setFormEnabled(enabled) {
-
   document.querySelectorAll(
     ".card button, .card select, .card textarea"
   ).forEach(el => {
     el.disabled = !enabled;
   });
-
 }
 
-// Initially disable all form controls
+// Initially disable the form
 setFormEnabled(false);
 
 // Questions
 const questions = [
-
   "Regularity of the teacher in taking classes",
-
   "Course coverage in the class in terms of content",
-
   "Method of teaching including teaching aids, if used",
-
   "Quality of teaching that helped you in understanding the subject and that enriched your knowledge",
-
   "Interaction of the teacher with the students in the class",
-
   "Ambience in the class in asking questions to the teacher",
-
   "How did the teacher stimulate your interest in the subject?",
-
   "Accessibility of the teacher for further discussions about the subject after class hours",
-
   "Encouraging the students by the teacher in making presentations using Library/Internet/Lab/Computing facilities"
-
 ];
 
 // Rating options
 const ratings = [
-
   ["1", "Outstanding"],
   ["2", "Good"],
   ["3", "Satisfactory"],
   ["4", "Unsatisfactory"],
   ["5", "Unable to assess"]
-
 ];
 
-// Generate questions dynamically
+// Generate questions
 function createQuestions(start, end, container) {
 
   let html = "";
@@ -302,31 +637,53 @@ function createQuestions(start, end, container) {
   for (let i = start; i < end; i++) {
 
     html += `
-      <div class="q">
-        ${i + 1}. ${questions[i]}
+      <div class="question-card" id="questionCard${i + 1}">
+
+        <div class="question-title">
+          <span class="question-number">${i + 1}</span>
+          <span>${questions[i]} <span class="required">*</span></span>
+        </div>
+
+        <div class="select-wrap">
+          <select id="q${i + 1}" required>
+            <option value="">Choose your rating</option>
+
+            ${ratings.map(r =>
+              `<option value="${r[0]}">${r[0]} — ${r[1]}</option>`
+            ).join("")}
+
+          </select>
+        </div>
+
       </div>
-
-      <select id="q${i + 1}" required>
-
-        <option value="">Select rating</option>
-
-        ${ratings.map(r =>
-          `<option value="${r[0]}">${r[0]} - ${r[1]}</option>`
-        ).join("")}
-
-      </select>
     `;
-
   }
 
   document.getElementById(container).innerHTML = html;
-
 }
 
 createQuestions(0, 5, "questions1");
 createQuestions(5, 9, "questions2");
 
-// Verify session and feedback status before allowing form access
+// Remove error indication when a valid rating is selected
+document.querySelectorAll(".card select").forEach(el => {
+
+  el.addEventListener("change", function() {
+
+    this.classList.remove("error");
+
+    const card = this.closest(".question-card");
+    if (card) card.classList.remove("has-error");
+
+  });
+
+});
+
+document.getElementById("suggestion").addEventListener("input", function() {
+  this.classList.remove("error");
+});
+
+// Verify session and feedback status
 if (token) {
 
   fetch(BACKEND, {
@@ -341,27 +698,19 @@ if (token) {
 
   .then(res => {
 
-    // Already submitted V2 feedback
     if (res.status === "OK" && res.submitted === true) {
-
       location.replace("SDB.html");
       return;
-
     }
 
-    // Valid session, but feedback is pending
     if (res.status === "PENDING" && res.submitted === false) {
-
       setFormEnabled(true);
       return;
-
     }
 
-    // Invalid or expired session
     sessionStorage.removeItem("token");
 
     alert("Session verification failed. Please login again.");
-
     location.replace("index.html");
 
   })
@@ -371,7 +720,7 @@ if (token) {
     msg.innerText =
       "Unable to verify your session. Please refresh the page and try again.";
 
-    // Keep form disabled until verification succeeds
+    // Keep the form disabled until verification succeeds
 
   });
 
@@ -386,16 +735,20 @@ function validateQuestions(start, end) {
   for (let i = start; i < end; i++) {
 
     const el = document.getElementById("q" + (i + 1));
+    const card = document.getElementById("questionCard" + (i + 1));
 
     el.classList.remove("error");
+    card.classList.remove("has-error");
 
     if (!el.value) {
 
       el.classList.add("error");
+      card.classList.add("has-error");
+
       valid = false;
 
       if (!firstError) {
-        firstError = el;
+        firstError = card;
       }
 
     }
@@ -403,37 +756,33 @@ function validateQuestions(start, end) {
   }
 
   if (firstError) {
-
     firstError.scrollIntoView({
       behavior: "smooth",
       block: "center"
     });
-
   }
 
   return valid;
-
 }
 
 // Move to page 2
 function nextPage() {
 
   msg.innerText = "";
+  msg.style.color = "";
 
   if (!validateQuestions(0, 5)) {
-
     msg.innerText =
       "Please answer all five questions before proceeding.";
-
     return;
-
   }
 
   document.getElementById("page1").classList.add("hidden");
-
   document.getElementById("page2").classList.remove("hidden");
 
   document.getElementById("progress2").classList.add("active");
+  document.getElementById("stepTitle").innerText = "Your Feedback";
+  document.getElementById("stepCount").innerText = "STEP 2 OF 2";
 
   window.scrollTo({
     top: 0,
@@ -446,12 +795,14 @@ function nextPage() {
 function previousPage() {
 
   document.getElementById("page2").classList.add("hidden");
-
   document.getElementById("page1").classList.remove("hidden");
 
   document.getElementById("progress2").classList.remove("active");
+  document.getElementById("stepTitle").innerText = "Your Feedback";
+  document.getElementById("stepCount").innerText = "STEP 1 OF 2";
 
   msg.innerText = "";
+  msg.style.color = "";
 
   window.scrollTo({
     top: 0,
@@ -460,23 +811,41 @@ function previousPage() {
 
 }
 
+// Show success overlay and redirect
+function showSuccessAndRedirect(alreadySubmitted) {
+
+  const overlay = document.getElementById("submissionOverlay");
+
+  if (alreadySubmitted) {
+    overlay.querySelector("h2").innerText = "Feedback Already Recorded!";
+    overlay.querySelector("p").innerHTML =
+      "Your feedback has already been recorded.<br>Redirecting you to your dashboard...";
+  }
+
+  overlay.classList.add("show");
+
+  // Prevent further interaction
+  document.body.style.overflow = "hidden";
+
+  setTimeout(() => {
+    location.replace("SDB.html");
+  }, 1800);
+
+}
+
 // Submit feedback
 function submitFeedback() {
 
   const suggestion = document.getElementById("suggestion");
 
-  const btn = document.getElementById("submitBtn");
-
   msg.innerText = "";
+  msg.style.color = "";
 
   // Validate questions 6 to 9
   if (!validateQuestions(5, 9)) {
-
     msg.innerText =
-      "Please answer all four questions.";
-
+      "Please answer all four questions before submitting.";
     return;
-
   }
 
   // Validate suggestions
@@ -495,22 +864,18 @@ function submitFeedback() {
     });
 
     return;
-
   }
 
   // Prevent multiple submissions
-  btn.disabled = true;
+  setFormEnabled(false);
 
-  msg.style.color = "#1565c0";
-
-  msg.innerText = "Submitting feedback...";
+  msg.style.color = "#526fe5";
+  msg.innerText = "Submitting your feedback...";
 
   const data = {
 
     action: "submitFeedback",
-
     token: token,
-
     formVersion: "V2",
 
     q1: document.getElementById("q1").value,
@@ -528,56 +893,41 @@ function submitFeedback() {
   };
 
   fetch(BACKEND, {
-
     method: "POST",
-
     body: new URLSearchParams(data)
-
   })
 
   .then(r => r.json())
 
   .then(res => {
 
-    if (
-      res.status === "OK" ||
-      res.status === "ALREADY_SUBMITTED"
-    ) {
-
-      msg.style.color = "#2e7d32";
-
-      msg.innerText =
-        "Feedback submitted successfully. Redirecting...";
-
-      setTimeout(() => {
-
-        location.replace("SDB.html");
-
-      }, 1000);
-
+    if (res.status === "OK") {
+      showSuccessAndRedirect(false);
+      return;
     }
 
-    else {
-
-      msg.style.color = "#c62828";
-
-      msg.innerText =
-        "Submission failed. Please try again.";
-
-      btn.disabled = false;
-
+    if (res.status === "ALREADY_SUBMITTED") {
+      showSuccessAndRedirect(true);
+      return;
     }
+
+    msg.style.color = "#dc3545";
+
+    msg.innerText =
+      "Submission failed. Please try again.";
+
+    setFormEnabled(true);
 
   })
 
   .catch(() => {
 
-    msg.style.color = "#c62828";
+    msg.style.color = "#dc3545";
 
     msg.innerText =
-      "Server error. Please try again.";
+      "Unable to submit your feedback. Please check your connection and try again.";
 
-    btn.disabled = false;
+    setFormEnabled(true);
 
   });
 
@@ -587,3 +937,4 @@ function submitFeedback() {
 
 </body>
 </html>
+```
