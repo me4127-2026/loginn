@@ -7,141 +7,154 @@
 <title>ME4127 - Course Feedback</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
-  font-family:"Segoe UI",Arial,sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
-  margin:0;
-  padding:15px;
+* {
+  box-sizing: border-box;
 }
 
-.card{
-  background:#fff;
-  padding:22px;
-  border-radius:16px;
-  width:100%;
-  max-width:520px;
-  box-shadow:0 10px 30px rgba(0,0,0,.25);
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 15px;
 }
 
-h2{
-  text-align:center;
-  color:#203a43;
-  margin:0 0 8px;
-  font-size:22px;
+.card {
+  background: #fff;
+  padding: 22px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
-.subtitle{
-  text-align:center;
-  font-size:13px;
-  color:#666;
-  margin-bottom:16px;
+h2 {
+  text-align: center;
+  color: #203a43;
+  margin: 0 0 8px;
+  font-size: 22px;
 }
 
-.progress{
-  display:flex;
-  gap:6px;
-  margin-bottom:18px;
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 16px;
 }
 
-.progress div{
-  height:5px;
-  flex:1;
-  background:#ddd;
-  border-radius:10px;
+.progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
 }
 
-.progress div.active{
-  background:#267caa;
+.progress div {
+  height: 5px;
+  flex: 1;
+  background: #ddd;
+  border-radius: 10px;
 }
 
-.page-label{
-  text-align:center;
-  font-weight:700;
-  color:#267caa;
-  margin-bottom:15px;
+.progress div.active {
+  background: #267caa;
 }
 
-.q{
-  margin-top:15px;
-  font-weight:600;
-  font-size:14px;
-  line-height:1.5;
+.page-label {
+  text-align: center;
+  font-weight: 700;
+  color: #267caa;
+  margin-bottom: 15px;
 }
 
-select,textarea{
-  width:100%;
-  padding:11px;
-  margin-top:7px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:14px;
-  background:white;
+.q {
+  margin-top: 15px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-select.error,textarea.error{
-  border:2px solid #e53935;
+select, textarea {
+  width: 100%;
+  padding: 11px;
+  margin-top: 7px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: white;
 }
 
-textarea{
-  min-height:110px;
-  resize:vertical;
+select.error, textarea.error {
+  border: 2px solid #e53935;
 }
 
-.buttons{
-  display:flex;
-  gap:10px;
-  margin-top:22px;
+textarea {
+  min-height: 110px;
+  resize: vertical;
 }
 
-button{
-  padding:12px;
-  background:linear-gradient(135deg,#2c5364,#203a43);
-  color:white;
-  border:none;
-  border-radius:25px;
-  font-weight:700;
-  font-size:14px;
-  cursor:pointer;
-  flex:1;
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
 }
 
-button:disabled{
-  background:#999;
-  cursor:not-allowed;
+button {
+  padding: 12px;
+  background: linear-gradient(135deg,#2c5364,#203a43);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  flex: 1;
 }
 
-.secondary{
-  background:#777;
+button:disabled {
+  background: #999;
+  cursor: not-allowed;
 }
 
-.msg{
-  text-align:center;
-  margin-top:14px;
-  font-weight:600;
-  font-size:14px;
-  color:#c62828;
+select:disabled,
+textarea:disabled {
+  background: #f2f2f2;
+  cursor: not-allowed;
 }
 
-.hidden{
-  display:none;
+.secondary {
+  background: #777;
 }
 
-.note{
-  font-size:12px;
-  color:#777;
-  margin-top:8px;
-  text-align:center;
+.msg {
+  text-align: center;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #c62828;
 }
 
-@media(max-width:480px){
-  .card{padding:17px}
-  h2{font-size:20px}
+.hidden {
+  display: none;
+}
+
+.note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 8px;
+  text-align: center;
+}
+
+@media(max-width:480px) {
+  .card {
+    padding: 17px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
 }
 </style>
 </head>
@@ -150,59 +163,69 @@ button:disabled{
 
 <div class="card">
 
-<h2>Course Feedback</h2>
-<div class="subtitle">
-AI & ML Applications in Mechanical Engineering (ME4127)
-</div>
+  <h2>Course Feedback</h2>
 
-<div class="progress">
-  <div id="progress1" class="active"></div>
-  <div id="progress2"></div>
-</div>
+  <div class="subtitle">
+    AI & ML Applications in Mechanical Engineering (ME4127)
+  </div>
 
-<!-- PAGE 1 -->
+  <div class="progress">
+    <div id="progress1" class="active"></div>
+    <div id="progress2"></div>
+  </div>
 
-<div id="page1">
+  <!-- PAGE 1 -->
 
-<div class="page-label">Page 1 of 2 — Questions 1 to 5</div>
+  <div id="page1">
 
-<div id="questions1"></div>
+    <div class="page-label">
+      Page 1 of 2 — Questions 1 to 5
+    </div>
 
-<div class="buttons">
-  <button onclick="nextPage()">Next →</button>
-</div>
+    <div id="questions1"></div>
 
-</div>
+    <div class="buttons">
+      <button onclick="nextPage()">Next →</button>
+    </div>
 
-<!-- PAGE 2 -->
+  </div>
 
-<div id="page2" class="hidden">
+  <!-- PAGE 2 -->
 
-<div class="page-label">Page 2 of 2 — Questions 6 to 9</div>
+  <div id="page2" class="hidden">
 
-<div id="questions2"></div>
+    <div class="page-label">
+      Page 2 of 2 — Questions 6 to 9
+    </div>
 
-<div class="q">
-Suggestions to improve the quality of the course and teaching
-</div>
+    <div id="questions2"></div>
 
-<textarea
-  id="suggestion"
-  placeholder="Enter your suggestions here..."
-></textarea>
+    <div class="q">
+      Suggestions to improve the quality of the course and teaching
+    </div>
 
-<div class="buttons">
-  <button class="secondary" onclick="previousPage()">← Previous</button>
-  <button id="submitBtn" onclick="submitFeedback()">Submit Feedback</button>
-</div>
+    <textarea
+      id="suggestion"
+      placeholder="Enter your suggestions here..."
+    ></textarea>
 
-</div>
+    <div class="buttons">
+      <button class="secondary" onclick="previousPage()">
+        ← Previous
+      </button>
 
-<div class="note">
-All nine questions and the suggestions box are mandatory.
-</div>
+      <button id="submitBtn" onclick="submitFeedback()">
+        Submit Feedback
+      </button>
+    </div>
 
-<div id="msg" class="msg"></div>
+  </div>
+
+  <div class="note">
+    All nine questions and the suggestions box are mandatory.
+  </div>
+
+  <div id="msg" class="msg"></div>
 
 </div>
 
@@ -213,224 +236,346 @@ All nine questions and the suggestions box are mandatory.
 const BACKEND = BACKEND_URL;
 const token = sessionStorage.getItem("token");
 
-if(!token){
+const msg = document.getElementById("msg");
+
+// No session: redirect to login
+if (!token) {
+
   alert("Session expired. Please login again.");
   location.replace("index.html");
+
 }
 
+// Disable the form until session verification is complete
+function setFormEnabled(enabled) {
+
+  document.querySelectorAll(
+    ".card button, .card select, .card textarea"
+  ).forEach(el => {
+    el.disabled = !enabled;
+  });
+
+}
+
+// Initially disable all form controls
+setFormEnabled(false);
+
+// Questions
 const questions = [
-"Regularity of the teacher in taking classes",
 
-"Course coverage in the class in terms of content",
+  "Regularity of the teacher in taking classes",
 
-"Method of teaching including teaching aids, if used",
+  "Course coverage in the class in terms of content",
 
-"Quality of teaching that helped you in understanding the subject and that enriched your knowledge",
+  "Method of teaching including teaching aids, if used",
 
-"Interaction of the teacher with the students in the class",
+  "Quality of teaching that helped you in understanding the subject and that enriched your knowledge",
 
-"Ambience in the class in asking questions to the teacher",
+  "Interaction of the teacher with the students in the class",
 
-"How did the teacher stimulate your interest in the subject?",
+  "Ambience in the class in asking questions to the teacher",
 
-"Accessibility of the teacher for further discussions about the subject after class hours",
+  "How did the teacher stimulate your interest in the subject?",
 
-"Encouraging the students by the teacher in making presentations using Library/Internet/Lab/Computing facilities"
+  "Accessibility of the teacher for further discussions about the subject after class hours",
+
+  "Encouraging the students by the teacher in making presentations using Library/Internet/Lab/Computing facilities"
+
 ];
 
+// Rating options
 const ratings = [
-  ["1","Outstanding"],
-  ["2","Good"],
-  ["3","Satisfactory"],
-  ["4","Unsatisfactory"],
-  ["5","Unable to assess"]
+
+  ["1", "Outstanding"],
+  ["2", "Good"],
+  ["3", "Satisfactory"],
+  ["4", "Unsatisfactory"],
+  ["5", "Unable to assess"]
+
 ];
 
-function createQuestions(start,end,container){
+// Generate questions dynamically
+function createQuestions(start, end, container) {
 
   let html = "";
 
-  for(let i=start;i<end;i++){
+  for (let i = start; i < end; i++) {
 
     html += `
       <div class="q">
-        ${i+1}. ${questions[i]}
+        ${i + 1}. ${questions[i]}
       </div>
 
-      <select id="q${i+1}" required>
+      <select id="q${i + 1}" required>
+
         <option value="">Select rating</option>
 
-        ${ratings.map(r=>
+        ${ratings.map(r =>
           `<option value="${r[0]}">${r[0]} - ${r[1]}</option>`
         ).join("")}
 
       </select>
     `;
+
   }
 
   document.getElementById(container).innerHTML = html;
+
 }
 
-createQuestions(0,5,"questions1");
-createQuestions(5,9,"questions2");
+createQuestions(0, 5, "questions1");
+createQuestions(5, 9, "questions2");
 
-// Check existing submission before showing form
-fetch(BACKEND,{
-  method:"POST",
-  body:new URLSearchParams({
-    action:"checkFeedbackStatus",
-    token:token
+// Verify session and feedback status before allowing form access
+if (token) {
+
+  fetch(BACKEND, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "checkFeedbackStatus",
+      token: token
+    })
   })
-})
-.then(r=>r.json())
-.then(res=>{
 
-  if(res.submitted){
-    location.replace("SDB.html");
-  }
+  .then(r => r.json())
 
-})
-.catch(()=>{
-  document.getElementById("msg").innerText =
-    "Unable to verify feedback status. Please refresh.";
-});
+  .then(res => {
 
-function validateQuestions(start,end){
+    // Already submitted V2 feedback
+    if (res.status === "OK" && res.submitted === true) {
+
+      location.replace("SDB.html");
+      return;
+
+    }
+
+    // Valid session, but feedback is pending
+    if (res.status === "PENDING" && res.submitted === false) {
+
+      setFormEnabled(true);
+      return;
+
+    }
+
+    // Invalid or expired session
+    sessionStorage.removeItem("token");
+
+    alert("Session verification failed. Please login again.");
+
+    location.replace("index.html");
+
+  })
+
+  .catch(() => {
+
+    msg.innerText =
+      "Unable to verify your session. Please refresh the page and try again.";
+
+    // Keep form disabled until verification succeeds
+
+  });
+
+}
+
+// Validate questions
+function validateQuestions(start, end) {
 
   let valid = true;
   let firstError = null;
 
-  for(let i=start;i<end;i++){
+  for (let i = start; i < end; i++) {
 
-    const el = document.getElementById("q"+(i+1));
+    const el = document.getElementById("q" + (i + 1));
 
     el.classList.remove("error");
 
-    if(!el.value){
+    if (!el.value) {
 
       el.classList.add("error");
       valid = false;
 
-      if(!firstError) firstError = el;
+      if (!firstError) {
+        firstError = el;
+      }
+
     }
+
   }
 
-  if(firstError){
+  if (firstError) {
+
     firstError.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
+      behavior: "smooth",
+      block: "center"
     });
+
   }
 
   return valid;
+
 }
 
-function nextPage(){
+// Move to page 2
+function nextPage() {
 
-  document.getElementById("msg").innerText = "";
+  msg.innerText = "";
 
-  if(!validateQuestions(0,5)){
-    document.getElementById("msg").innerText =
+  if (!validateQuestions(0, 5)) {
+
+    msg.innerText =
       "Please answer all five questions before proceeding.";
+
     return;
+
   }
 
   document.getElementById("page1").classList.add("hidden");
+
   document.getElementById("page2").classList.remove("hidden");
 
   document.getElementById("progress2").classList.add("active");
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
 }
 
-function previousPage(){
+// Return to page 1
+function previousPage() {
 
   document.getElementById("page2").classList.add("hidden");
+
   document.getElementById("page1").classList.remove("hidden");
 
   document.getElementById("progress2").classList.remove("active");
 
-  document.getElementById("msg").innerText = "";
+  msg.innerText = "";
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
 }
 
-function submitFeedback(){
+// Submit feedback
+function submitFeedback() {
 
-  const msg = document.getElementById("msg");
   const suggestion = document.getElementById("suggestion");
+
   const btn = document.getElementById("submitBtn");
 
   msg.innerText = "";
 
-  if(!validateQuestions(5,9)){
-    msg.innerText = "Please answer all four questions.";
+  // Validate questions 6 to 9
+  if (!validateQuestions(5, 9)) {
+
+    msg.innerText =
+      "Please answer all four questions.";
+
     return;
+
   }
 
+  // Validate suggestions
   suggestion.classList.remove("error");
 
-  if(!suggestion.value.trim()){
+  if (!suggestion.value.trim()) {
+
     suggestion.classList.add("error");
-    msg.innerText = "Please enter your suggestions.";
+
+    msg.innerText =
+      "Please enter your suggestions.";
 
     suggestion.scrollIntoView({
-      behavior:"smooth",
-      block:"center"
+      behavior: "smooth",
+      block: "center"
     });
 
     return;
+
   }
 
+  // Prevent multiple submissions
   btn.disabled = true;
+
   msg.style.color = "#1565c0";
+
   msg.innerText = "Submitting feedback...";
 
   const data = {
-    action:"submitFeedback",
-    token:token,
-    formVersion:"V2",
-    q1:document.getElementById("q1").value,
-    q2:document.getElementById("q2").value,
-    q3:document.getElementById("q3").value,
-    q4:document.getElementById("q4").value,
-    q5:document.getElementById("q5").value,
-    q6:document.getElementById("q6").value,
-    q7:document.getElementById("q7").value,
-    q8:document.getElementById("q8").value,
-    q9:document.getElementById("q9").value,
-    suggestion:suggestion.value.trim()
+
+    action: "submitFeedback",
+
+    token: token,
+
+    formVersion: "V2",
+
+    q1: document.getElementById("q1").value,
+    q2: document.getElementById("q2").value,
+    q3: document.getElementById("q3").value,
+    q4: document.getElementById("q4").value,
+    q5: document.getElementById("q5").value,
+    q6: document.getElementById("q6").value,
+    q7: document.getElementById("q7").value,
+    q8: document.getElementById("q8").value,
+    q9: document.getElementById("q9").value,
+
+    suggestion: suggestion.value.trim()
+
   };
 
-  fetch(BACKEND,{
-    method:"POST",
-    body:new URLSearchParams(data)
+  fetch(BACKEND, {
+
+    method: "POST",
+
+    body: new URLSearchParams(data)
+
   })
-  .then(r=>r.json())
-  .then(res=>{
 
-    if(res.status==="OK" ||
-       res.status==="ALREADY_SUBMITTED"){
+  .then(r => r.json())
 
-      msg.style.color="#2e7d32";
-      msg.innerText="Feedback submitted successfully. Redirecting...";
+  .then(res => {
 
-      setTimeout(()=>{
+    if (
+      res.status === "OK" ||
+      res.status === "ALREADY_SUBMITTED"
+    ) {
+
+      msg.style.color = "#2e7d32";
+
+      msg.innerText =
+        "Feedback submitted successfully. Redirecting...";
+
+      setTimeout(() => {
+
         location.replace("SDB.html");
-      },1000);
 
-    }else{
+      }, 1000);
 
-      msg.style.color="#c62828";
-      msg.innerText="Submission failed. Please try again.";
+    }
+
+    else {
+
+      msg.style.color = "#c62828";
+
+      msg.innerText =
+        "Submission failed. Please try again.";
+
       btn.disabled = false;
+
     }
 
   })
-  .catch(()=>{
 
-    msg.style.color="#c62828";
-    msg.innerText="Server error. Please try again.";
+  .catch(() => {
+
+    msg.style.color = "#c62828";
+
+    msg.innerText =
+      "Server error. Please try again.";
 
     btn.disabled = false;
 
