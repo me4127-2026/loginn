@@ -1,89 +1,147 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ME4127 - Course Feedback</title>
 
 <style>
-    button:disabled{
-  background:#999;
-  cursor:not-allowed;
-}
+*{box-sizing:border-box}
+
 body{
-  font-family:"Segoe UI",Arial;
+  font-family:"Segoe UI",Arial,sans-serif;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   display:flex;
   justify-content:center;
   align-items:center;
   min-height:100vh;
   margin:0;
-  padding:12px;
+  padding:15px;
 }
 
 .card{
   background:#fff;
-  padding:20px;
-  border-radius:14px;
+  padding:22px;
+  border-radius:16px;
   width:100%;
-  max-width:480px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  max-width:520px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
 h2{
   text-align:center;
-  margin-bottom:12px;
-  font-size:20px;
   color:#203a43;
+  margin:0 0 8px;
+  font-size:22px;
+}
+
+.subtitle{
+  text-align:center;
+  font-size:13px;
+  color:#666;
+  margin-bottom:16px;
+}
+
+.progress{
+  display:flex;
+  gap:6px;
+  margin-bottom:18px;
+}
+
+.progress div{
+  height:5px;
+  flex:1;
+  background:#ddd;
+  border-radius:10px;
+}
+
+.progress div.active{
+  background:#267caa;
+}
+
+.page-label{
+  text-align:center;
+  font-weight:700;
+  color:#267caa;
+  margin-bottom:15px;
 }
 
 .q{
-  margin-top:12px;
+  margin-top:15px;
   font-weight:600;
   font-size:14px;
+  line-height:1.5;
 }
 
-select, textarea{
+select,textarea{
   width:100%;
-  padding:10px;
-  margin-top:5px;
+  padding:11px;
+  margin-top:7px;
   border-radius:8px;
   border:1px solid #ccc;
   font-size:14px;
-  box-sizing:border-box;   /* 🔴 IMPORTANT FIX */
+  background:white;
 }
-.error{
-  border:2px solid #e53935 !important;
+
+select.error,textarea.error{
+  border:2px solid #e53935;
 }
+
 textarea{
-  min-height:80px;
-  resize:none;
+  min-height:110px;
+  resize:vertical;
+}
+
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:22px;
 }
 
 button{
-  margin-top:18px;
-  width:100%;
   padding:12px;
   background:linear-gradient(135deg,#2c5364,#203a43);
-  color:#fff;
+  color:white;
   border:none;
   border-radius:25px;
-  font-weight:600;
-  font-size:15px;
+  font-weight:700;
+  font-size:14px;
+  cursor:pointer;
+  flex:1;
+}
+
+button:disabled{
+  background:#999;
+  cursor:not-allowed;
+}
+
+.secondary{
+  background:#777;
 }
 
 .msg{
   text-align:center;
-  margin-top:10px;
+  margin-top:14px;
   font-weight:600;
-  color:red;
+  font-size:14px;
+  color:#c62828;
 }
 
-/* 📱 Extra mobile tweak */
+.hidden{
+  display:none;
+}
+
+.note{
+  font-size:12px;
+  color:#777;
+  margin-top:8px;
+  text-align:center;
+}
+
 @media(max-width:480px){
-  .card{
-    padding:16px;
-  }
+  .card{padding:17px}
+  h2{font-size:20px}
 }
 </style>
 </head>
@@ -91,160 +149,293 @@ button{
 <body>
 
 <div class="card">
+
 <h2>Course Feedback</h2>
+<div class="subtitle">
+AI & ML Applications in Mechanical Engineering (ME4127)
+</div>
 
-<div class="q"> Course content organization and clarity </div>
-<select id="q1">
-<option value="" disabled selected>Select</option>
-<option>Very Good</option>
-<option>Good</option>
-<option>Average</option>
-<option>Bad</option>
-<option>Very Bad</option>
-</select>
+<div class="progress">
+  <div id="progress1" class="active"></div>
+  <div id="progress2"></div>
+</div>
 
-<div class="q">Effectiveness of teaching and explanation of concepts</div>
-<select id="q2">
-<option value="" disabled selected>Select</option>
-<option>Very Good</option>
-<option>Good</option>
-<option>Average</option>
-<option>Bad</option>
-<option>Very Bad</option>
-</select>
+<!-- PAGE 1 -->
 
-<div class="q">Usefulness of examples, numerical problems, and practical applications</div>
-<select id="q3">
-<option value="" disabled selected>Select</option>
-<option>Very Good</option>
-<option>Good</option>
-<option>Average</option>
-<option>Bad</option>
-<option>Very Bad</option>
-</select>
+<div id="page1">
 
-<div class="q">Usefulness of assessments (class tests/assignments) in understanding the subject</div>
-<select id="q4">
-<option value="" disabled selected>Select</option>
-<option>Very Good</option>
-<option>Good</option>
-<option>Average</option>
-<option>Bad</option>
-<option>Very Bad</option>
-</select>
+<div class="page-label">Page 1 of 2 — Questions 1 to 5</div>
 
-<div class="q">Faculty support, interaction, and guidance throughout the course</div>
-<select id="q5">
-<option value="" disabled selected>Select</option>
-<option>Very Good</option>
-<option>Good</option>
-<option>Average</option>
-<option>Bad</option>
-<option>Very Bad</option>
-</select>
+<div id="questions1"></div>
 
-<div class="q">Suggestions</div>
-<textarea id="suggestion"></textarea>
+<div class="buttons">
+  <button onclick="nextPage()">Next →</button>
+</div>
 
-<button id="submitBtn" onclick="submitFeedback()" disabled>
-  Submit Feedback
-</button>
+</div>
 
-<div id="msg"></div>
+<!-- PAGE 2 -->
+
+<div id="page2" class="hidden">
+
+<div class="page-label">Page 2 of 2 — Questions 6 to 9</div>
+
+<div id="questions2"></div>
+
+<div class="q">
+Suggestions to improve the quality of the course and teaching
+</div>
+
+<textarea
+  id="suggestion"
+  placeholder="Enter your suggestions here..."
+></textarea>
+
+<div class="buttons">
+  <button class="secondary" onclick="previousPage()">← Previous</button>
+  <button id="submitBtn" onclick="submitFeedback()">Submit Feedback</button>
+</div>
+
+</div>
+
+<div class="note">
+All nine questions and the suggestions box are mandatory.
+</div>
+
+<div id="msg" class="msg"></div>
+
 </div>
 
 <script src="config.js"></script>
+
 <script>
+
 const BACKEND = BACKEND_URL;
 const token = sessionStorage.getItem("token");
 
 if(!token){
-  alert("Session expired");
+  alert("Session expired. Please login again.");
   location.replace("index.html");
 }
 
-document.querySelectorAll("select").forEach(sel=>{
-  sel.addEventListener("change", function(){
-    this.classList.remove("error");  // remove red when corrected
-    checkAllFilled();
-  });
+const questions = [
+"Regularity of the teacher in taking classes",
+
+"Course coverage in the class in terms of content",
+
+"Method of teaching including teaching aids, if used",
+
+"Quality of teaching that helped you in understanding the subject and that enriched your knowledge",
+
+"Interaction of the teacher with the students in the class",
+
+"Ambience in the class in asking questions to the teacher",
+
+"How did the teacher stimulate your interest in the subject?",
+
+"Accessibility of the teacher for further discussions about the subject after class hours",
+
+"Encouraging the students by the teacher in making presentations using Library/Internet/Lab/Computing facilities"
+];
+
+const ratings = [
+  ["1","Outstanding"],
+  ["2","Good"],
+  ["3","Satisfactory"],
+  ["4","Unsatisfactory"],
+  ["5","Unable to assess"]
+];
+
+function createQuestions(start,end,container){
+
+  let html = "";
+
+  for(let i=start;i<end;i++){
+
+    html += `
+      <div class="q">
+        ${i+1}. ${questions[i]}
+      </div>
+
+      <select id="q${i+1}" required>
+        <option value="">Select rating</option>
+
+        ${ratings.map(r=>
+          `<option value="${r[0]}">${r[0]} - ${r[1]}</option>`
+        ).join("")}
+
+      </select>
+    `;
+  }
+
+  document.getElementById(container).innerHTML = html;
+}
+
+createQuestions(0,5,"questions1");
+createQuestions(5,9,"questions2");
+
+// Check existing submission before showing form
+fetch(BACKEND,{
+  method:"POST",
+  body:new URLSearchParams({
+    action:"checkFeedbackStatus",
+    token:token
+  })
+})
+.then(r=>r.json())
+.then(res=>{
+
+  if(res.submitted){
+    location.replace("SDB.html");
+  }
+
+})
+.catch(()=>{
+  document.getElementById("msg").innerText =
+    "Unable to verify feedback status. Please refresh.";
 });
 
-function checkAllFilled(){
-  const filled =
-  document.getElementById("q1").value &&
-  document.getElementById("q2").value &&
-  document.getElementById("q3").value &&
-  document.getElementById("q4").value &&
-  document.getElementById("q5").value;
-  document.getElementById("submitBtn").disabled = !filled;
+function validateQuestions(start,end){
+
+  let valid = true;
+  let firstError = null;
+
+  for(let i=start;i<end;i++){
+
+    const el = document.getElementById("q"+(i+1));
+
+    el.classList.remove("error");
+
+    if(!el.value){
+
+      el.classList.add("error");
+      valid = false;
+
+      if(!firstError) firstError = el;
+    }
+  }
+
+  if(firstError){
+    firstError.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+  }
+
+  return valid;
+}
+
+function nextPage(){
+
+  document.getElementById("msg").innerText = "";
+
+  if(!validateQuestions(0,5)){
+    document.getElementById("msg").innerText =
+      "Please answer all five questions before proceeding.";
+    return;
+  }
+
+  document.getElementById("page1").classList.add("hidden");
+  document.getElementById("page2").classList.remove("hidden");
+
+  document.getElementById("progress2").classList.add("active");
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function previousPage(){
+
+  document.getElementById("page2").classList.add("hidden");
+  document.getElementById("page1").classList.remove("hidden");
+
+  document.getElementById("progress2").classList.remove("active");
+
+  document.getElementById("msg").innerText = "";
+
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 function submitFeedback(){
 
   const msg = document.getElementById("msg");
+  const suggestion = document.getElementById("suggestion");
+  const btn = document.getElementById("submitBtn");
 
-  const q1El = document.getElementById("q1");
-  const q2El = document.getElementById("q2");
-  const q3El = document.getElementById("q3");
-  const q4El = document.getElementById("q4");
-  const q5El = document.getElementById("q5");
+  msg.innerText = "";
 
-  // 🔴 Reset errors
-  [q1El,q2El,q3El,q4El,q5El].forEach(el => el.classList.remove("error"));
-
-  let valid = true;
-
-  [q1El,q2El,q3El,q4El,q5El].forEach(el=>{
-    if(!el.value){
-      el.classList.add("error");
-      valid = false;
-    }
-  });
-
- if(!valid){
-  msg.innerText = "Please answer all questions";
-
-  // 🔽 Scroll to first error
-  const firstError = document.querySelector(".error");
-  if(firstError){
-    firstError.scrollIntoView({ behavior:"smooth", block:"center" });
+  if(!validateQuestions(5,9)){
+    msg.innerText = "Please answer all four questions.";
+    return;
   }
 
-  return;
-}
+  suggestion.classList.remove("error");
 
-  msg.innerText = "Submitting...";
+  if(!suggestion.value.trim()){
+    suggestion.classList.add("error");
+    msg.innerText = "Please enter your suggestions.";
 
-  // 🔒 Disable button after click
-  document.getElementById("submitBtn").disabled = true;
+    suggestion.scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+
+    return;
+  }
+
+  btn.disabled = true;
+  msg.style.color = "#1565c0";
+  msg.innerText = "Submitting feedback...";
+
+  const data = {
+    action:"submitFeedback",
+    token:token,
+    formVersion:"V2",
+    q1:document.getElementById("q1").value,
+    q2:document.getElementById("q2").value,
+    q3:document.getElementById("q3").value,
+    q4:document.getElementById("q4").value,
+    q5:document.getElementById("q5").value,
+    q6:document.getElementById("q6").value,
+    q7:document.getElementById("q7").value,
+    q8:document.getElementById("q8").value,
+    q9:document.getElementById("q9").value,
+    suggestion:suggestion.value.trim()
+  };
 
   fetch(BACKEND,{
     method:"POST",
-    body:new URLSearchParams({
-      action:"submitFeedback",
-      token:token,
-      q1:q1El.value,
-      q2:q2El.value,
-      q3:q3El.value,
-      q4:q4El.value,
-      q5:q5El.value,
-      suggestion:suggestion.value
-    })
+    body:new URLSearchParams(data)
   })
   .then(r=>r.json())
   .then(res=>{
-    if(res.status==="OK" || res.status==="ALREADY_SUBMITTED"){
-      window.location.href="SDB.html";
+
+    if(res.status==="OK" ||
+       res.status==="ALREADY_SUBMITTED"){
+
+      msg.style.color="#2e7d32";
+      msg.innerText="Feedback submitted successfully. Redirecting...";
+
+      setTimeout(()=>{
+        location.replace("SDB.html");
+      },1000);
+
     }else{
-      msg.innerText="Submission failed";
-      document.getElementById("submitBtn").disabled = false; // re-enable if failed
+
+      msg.style.color="#c62828";
+      msg.innerText="Submission failed. Please try again.";
+      btn.disabled = false;
     }
+
   })
   .catch(()=>{
-    msg.innerText="Server error";
-    document.getElementById("submitBtn").disabled = false;
+
+    msg.style.color="#c62828";
+    msg.innerText="Server error. Please try again.";
+
+    btn.disabled = false;
+
   });
+
 }
 
 </script>
