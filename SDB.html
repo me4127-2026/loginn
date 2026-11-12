@@ -528,26 +528,13 @@ const token=sessionStorage.getItem("token");
 let dashboardServerClockOffset = 0;
 if(!token){
   location.replace("index.html");
-} 
+} else {
+  // Continue with dashboard initialization
+}
 
 // Prevent bypass without feedback submission
-const FEEDBACK_ENABLED = false;
+const FEEDBACK_ENABLED = true;
 
-if(FEEDBACK_ENABLED){
-  fetch(BACKEND,{
-    method:"POST",
-    body:new URLSearchParams({
-      action:"checkFeedbackStatus",
-      token
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-    if(!res.submitted){
-      location.replace("feedback.html");
-    }
-  });
-}
 
 const testsBox = document.getElementById("testsBox");
 const resultsBox = document.getElementById("resultsBox");
@@ -571,49 +558,95 @@ function closeAll(){
   attendanceOpen = false;
 }
 
-Promise.all([
-  fetch(BACKEND,{
-    method:"POST",
-    body:new URLSearchParams({action:"dashboard",token})
-  }).then(r => r.json()),
+(async function initializeDashboard() {
 
-  fetch(BACKEND,{
-    method:"POST",
-    body:new URLSearchParams({action:"getMyAttendance",token})
-  }).then(r => r.json())
-])
+  try {
 
-.then(([d,a])=>{
+    // STEP 1: Verify feedback completion first
+    const feedbackResponse = await fetch(BACKEND, {
+      method: "POST",
+      body: new URLSearchParams({
+        action: "checkFeedbackStatus",
+        token: token
+      })
+    });
 
-  if(d.status !== "OK"){
-    sessionStorage.clear();
-    location.replace("index.html");
-    return;
+    const feedback = await feedbackResponse.json();
+
+    if (feedback.status === "PENDING" &&
+        feedback.submitted === false) {
+      location.replace("feedback.html");
+      return;
+    }
+
+    if (feedback.status !== "OK" ||
+        feedback.submitted !== true) {
+      sessionStorage.removeItem("token");
+      location.replace("index.html");
+      return;
+    }
+
+    // STEP 2: Load dashboard data only after verification
+    const [d, a] = await Promise.all([
+
+      fetch(BACKEND, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "dashboard",
+          token: token
+        })
+      }).then(r => r.json()),
+
+      fetch(BACKEND, {
+        method: "POST",
+        body: new URLSearchParams({
+          action: "getMyAttendance",
+          token: token
+        })
+      }).then(r => r.json())
+
+    ]);
+
+    // Backend protection: retain this additional check
+    if (d.status === "FEEDBACK_REQUIRED" ||
+        a.status === "FEEDBACK_REQUIRED") {
+      location.replace("feedback.html");
+      return;
+    }
+
+    if (d.status !== "OK" || a.status !== "OK") {
+      sessionStorage.removeItem("token");
+      location.replace("index.html");
+      return;
+    }
+
+    loadingBox.style.display = "none";
+    contentArea.style.display = "block";
+    welcomeBox.style.display = "block";
+
+    welcomeText.innerHTML =
+      `Welcome <span style="color:#1b5e20">${d.name} (${d.roll})</span>`;
+
+    attendanceValue.innerText = a.percent + "%";
+
+    attendanceValue.className =
+      "attendanceValue " +
+      (a.percent >= 75 ? "attendance-good" : "attendance-bad");
+
+  } catch (err) {
+
+    console.error("Dashboard Load Error:", err);
+
+    loadingBox.innerHTML = `
+      <span style="color:#b71c1c">
+        Unable to verify your feedback or load the dashboard.<br>
+        Please refresh or login again.
+      </span>
+    `;
+
   }
 
-  loadingBox.style.display="none";
-  contentArea.style.display="block";
-  welcomeBox.style.display="block";
-
-  welcomeText.innerHTML =
-    `Welcome <span style="color:#1b5e20">${d.name} (${d.roll})</span>`;
-
-  attendanceValue.innerText = a.percent + "%";
-  attendanceValue.className =
-    "attendanceValue " + (a.percent>=75?"attendance-good":"attendance-bad");
-
-})
-
-.catch(err=>{
-  console.error("Dashboard Load Error:", err);
-
-  loadingBox.innerHTML = `
-    <span style="color:#b71c1c">
-      Unable to load dashboard.<br>
-      Please refresh or login again.
-    </span>
-  `;
-});
+})();
 
 let attendanceOpen = false;
 
