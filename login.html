@@ -330,9 +330,36 @@ button:disabled{background:#999;cursor:not-allowed;}
 </div>
 <script src="config.js"></script>
 <script>
-  if(sessionStorage.getItem("token")){
-  window.location.href = "SDB.html"; // or dashboard.html
+ function routeStudent(){
+
+  const token = sessionStorage.getItem("token");
+
+  if(!token) return;
+
+  fetch(BACKEND,{
+    method:"POST",
+    body:new URLSearchParams({
+      action:"checkFeedbackStatus",
+      token:token
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+
+    if(res.submitted){
+      location.replace("SDB.html");
+    }else{
+      location.replace("feedback.html");
+    }
+
+  })
+  .catch(()=>{
+    document.getElementById("msg").innerText =
+      "Unable to verify your feedback status. Please try again.";
+  });
 }
+
+routeStudent();
 const BACKEND = BACKEND_URL;
   
 /* ===== Automatically Rotating Course Updates ===== */
@@ -429,11 +456,13 @@ function login(){
 })
   .then(r=>r.json())
   .then(res=>{
-  if(res.status === "OK" && res.token){
-    sessionStorage.setItem("token", res.token);
-    window.location.href = "SDB.html";
-    return;
-  }
+if(res.status === "OK" && res.token){
+
+  sessionStorage.setItem("token",res.token);
+
+  routeStudent();
+  return;
+}
 
   msg.style.color = "red";
 
