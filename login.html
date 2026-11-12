@@ -330,6 +330,7 @@ button:disabled{background:#999;cursor:not-allowed;}
 </div>
 <script src="config.js"></script>
 <script>
+  const BACKEND = BACKEND_URL;
  function routeStudent(){
 
   const token = sessionStorage.getItem("token");
@@ -346,21 +347,32 @@ button:disabled{background:#999;cursor:not-allowed;}
   .then(r=>r.json())
   .then(res=>{
 
-    if(res.submitted){
-      location.replace("SDB.html");
-    }else{
-      location.replace("feedback.html");
-    }
+    if (res.status === "OK" && res.submitted === true) {
+    location.replace("SDB.html");
+}
+else if (res.status === "PENDING" && res.submitted === false) {
+    location.replace("feedback.html");
+}
+else {
+    sessionStorage.removeItem("token");
+
+    document.getElementById("msg").innerText =
+        "Session expired or verification failed. Please log in again.";
+
+    document.getElementById("loginBtn").disabled = false;
+}
 
   })
-  .catch(()=>{
+.catch(() => {
     document.getElementById("msg").innerText =
-      "Unable to verify your feedback status. Please try again.";
-  });
+        "Unable to verify your feedback status. Please try again.";
+
+    document.getElementById("loginBtn").disabled = false;
+});
 }
 
 routeStudent();
-const BACKEND = BACKEND_URL;
+
   
 /* ===== Automatically Rotating Course Updates ===== */
 
