@@ -416,6 +416,11 @@ footer{
   font-size:13px;
   font-weight:600;
 }
+  /* Prevent marks from wrapping on mobile screens */
+#summaryBox table td:nth-child(2),
+#summaryBox table th:nth-child(2) {
+    white-space: nowrap;
+}
 </style>
 </head>
 
@@ -1110,7 +1115,7 @@ function toggleExamSummary(){
     const ct3 = getMarksById("CT3", 5);
     const ct4 = getMarksById("CT4", 5);
 
-    const mid = getMarksById("MID", 10);
+    const mid = getMarksById("MID", 15);
     const end = getMarksById("END", 25);
 
     // ===== Calculations =====
